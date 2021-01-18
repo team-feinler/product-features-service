@@ -10,30 +10,36 @@ mongoose.connect('mongodb://localhost/fec_product_features', {
 
 db.on('error', console.error.bind(console, 'connection error:'));
 db.once('open', function() {
-  console.log('Mongoose connected successfully!');
+  console.log('Mongoose connected established.');
 });
 
 const productFeaturesSchema = new mongoose.Schema({
   productId: {
-    type: String,
+    type: Number,
     unique: true
   },
   banner: {
     header: String,
-    text: [{
-      description: String
-    }]
+    text: String
   },
   features: [{
     header: String,
     description: String
   }],
-  additionalFeatures: [{
+  featureSetup: {
     header: String,
-    description: String
-  }]
+    description: []
+  },
+  additionalFeatures: {
+    header: String,
+    description: String,
+    contentGrid: [{
+      title: String,
+      description: String
+    }]
+  }
 });
 
-const ProductFeatures = mongoose.model('productFeatures', productFeaturesSchema);
+const ProductFeatures = mongoose.model('ProductFeatures', productFeaturesSchema);
 
 module.exports = ProductFeatures;
