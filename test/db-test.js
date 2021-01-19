@@ -1,5 +1,6 @@
 const assert = require('assert');
 const expect = require('chai').expect;
+const request = require('request');
 const mongoose = require('mongoose');
 const db = mongoose.connection;
 const ProductFeatures = require('../database/database.js');
@@ -37,6 +38,18 @@ describe('Database seeding', function() {
           done();
         })
         .finally(() => mongoose.connection.close());
+    });
+  });
+});
+
+describe('Express Server', () => {
+  const url = 'http://localhost:4000/';
+  describe('Loading Express', () => {
+    it('should return status 200 at "http://localhost:4000/"', (done) => {
+      request(url, (err, res, body) => {
+        expect(res.statusCode).to.equal(200);
+        done();
+      });
     });
   });
 });
