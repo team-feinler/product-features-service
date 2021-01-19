@@ -3,7 +3,11 @@
   "version": "",
   "description": "Product features service for the Front End Capstone project. Amazon.com item detail page. Team Blitva.",
   "author": "",
-  "license": "",
+  "license": "MIT license",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/blitva/product-features-service.git"
+  },
   "engines": {
     "node": ">=6.13.0"
   },
@@ -14,7 +18,8 @@
   "dependencies": {
     "express": "^4.17.1",
     "faker": "^5.1.0",
-    "mongoose": "^5.11.12"
+    "mongoose": "^5.11.12",
+    "request": "^2.88.2"
   },
   "devDependencies": {
     "@babel/core": "^7.12.10",
