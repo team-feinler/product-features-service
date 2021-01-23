@@ -1,14 +1,4 @@
 const mongoose = require('mongoose');
-const db = mongoose.connection;
-
-mongoose.connect('mongodb://localhost/fec_product_features', {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-  useFindAndModify: false,
-  useCreateIndex: true
-});
-
-db.on('error', console.error.bind(console, 'connection error:'));
 
 const productFeaturesSchema = new mongoose.Schema({
   productId: {
@@ -43,7 +33,7 @@ const load = (productId, callback) => {
   ProductFeatures.find({ productId: productId })
     .exec((err, data) => {
       if (err) {
-        console.log(`Error loading product ${productId} from database`);
+        console.log(`Error loading product ${productId} from database`, err);
         callback(err);
       } else {
         callback(null, data);
@@ -51,5 +41,5 @@ const load = (productId, callback) => {
     });
 }
 
-module.exports.ProductFeatures = ProductFeatures;
+module.exports = ProductFeatures;
 module.exports.load = load;
