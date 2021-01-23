@@ -15,6 +15,10 @@ describe('Database seeding', () => {
   });
 
   describe('Seeding Script', () => {
+    it('throws an error if no parameters are passed into fakeDataGenerator()', (done) => {
+      assert.throws(() => fakeDataGenerator(), Error, 'Must include recordsToCreate and startingRecordID params')
+      done();
+    });
 
     mongoose.connect('mongodb://localhost/fec_product_features');
     mongoose.connection
@@ -23,12 +27,6 @@ describe('Database seeding', () => {
       });
 
     beforeEach((done) => {
-      db.collections.productfeatures.drop(() => {
-        done();
-      });
-    });
-
-    afterEach((done) => {
       db.collections.productfeatures.drop(() => {
         done();
       });
@@ -44,11 +42,6 @@ describe('Database seeding', () => {
         })
         .finally(() => mongoose.connection.close());
     });
-
-    xit('throws an error if no parameters are passed into fakeDataGenerator', (done) => {
-      expect(fakeDataGenerator()).to.throw(new Error('Must include recordsToCreate and startingRecordID params'))
-      done();
-    })
   });
 });
 
