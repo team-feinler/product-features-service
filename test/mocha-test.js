@@ -1,10 +1,16 @@
-const assert = require('assert');
-const expect = require('chai').expect;
-const request = require('request');
+const server = require('../server/server.js');
 const mongoose = require('mongoose');
 const db = mongoose.connection;
 const ProductFeatures = require('../database/database.js');
 const { fakeDataGenerator } = require('../database/seed-data/fakeDataGenerator.js');
+
+// require dev-dependencies
+const assert = require('assert');
+const chai = require('chai'), chaiHttp = require('chai-http');
+chai.use(chaiHttp);
+const expect = require('chai').expect;
+const request = require('request');
+
 
 describe('Database seeding', () => {
   describe('Fake Data Generator', () => {
@@ -54,5 +60,16 @@ describe('Express Server', () => {
         done();
       });
     });
+
+    it('should GET a single "product feature" record', (done) => {
+      chai.request(server)
+        .get('/product-features/1')
+        .end((err, res) => {
+          // expect(res.statusCode).to.equal(200)
+          console.log(res.body);
+          expect(res.body).to.be.a('object')
+          done();
+        })
+    })
   });
 });
