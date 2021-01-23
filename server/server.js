@@ -3,20 +3,19 @@ const app = express();
 const port = 4000;
 const db = require('../database/database.js');
 
-app.get('/', (req, res) => {
-  res.send('Hello World');
-  res.statusCode(200);
-})
+app.use('/:id', express.static(__dirname + '/../client/dist'));
 
-app.get('/product-features/1000', (req, res) => {
-  db.load((err, data) => {
+app.get('/product-features/:id', (req, res) => {
+  let productId = req.query.productId;
+  console.log(`Requesting product ${productId} from the database.`)
+  db.load(productId, (err, data) => {
     if (err) {
       console.log('Error loading data');
     }
-    res.send(data);
-  })
+    res.json(data);
+  });
 });
 
 app.listen(port, () => {
   console.log(`Express server listening at http://localhost:${port}`);
-})
+});
