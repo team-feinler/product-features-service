@@ -13,7 +13,8 @@
   },
   "scripts": {
     "test": "./node_modules/mocha/bin/mocha",
-    "seed-database": "node database/seed-data/seeder.js"
+    "seed-database": "node database/seed-data/seeder.js",
+    "server-dev": "nodemon server/server.js"
   },
   "dependencies": {
     "express": "^4.17.1",
