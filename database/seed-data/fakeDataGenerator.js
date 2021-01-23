@@ -1,22 +1,15 @@
 const faker = require('faker');
 
-let fakeHeader = () => {
-  return (faker.lorem.sentence().slice(0, -1));
-};
-
-let fakeSentence = () => {
-  return (faker.lorem.sentence());
-};
-
-let fakeDescription = () => {
-  return (faker.lorem.sentences());
-};
-
-let fakeTitle = () => {
-  return (faker.name.jobArea());
-};
+let fakeHeader = () => (faker.lorem.sentence().slice(0, -1));
+let fakeSentence = () => (faker.lorem.sentence());
+let fakeDescription = () => (faker.lorem.sentences());
+let fakeTitle = () => (faker.name.jobArea());
 
 let fakeDataGenerator = (recordsToCreate, startingRecordID) => {
+
+  if (recordsToCreate === undefined || startingRecordID === undefined) {
+    throw new Error('Must include recordsToCreate and startingRecordID params');
+  }
 
   let data = [];
 
