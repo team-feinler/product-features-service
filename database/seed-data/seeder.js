@@ -2,10 +2,9 @@ const mongoose = require('mongoose');
 const ProductFeatures = require('../database.js');
 const { fakeDataGenerator } = require('./fakeDataGenerator.js');
 
-(async function seedDatabase() {
+async function seedDatabase(recordsToCreate, startingRecordID) {
   try {
-    // load fakeDataGenerator with (recordsToCreate, startingRecordID)
-    let fakeData = await fakeDataGenerator(100, 1000);
+    let fakeData = await fakeDataGenerator(recordsToCreate, startingRecordID);
     console.log(`Seeding database with ${fakeData.length} record(s).`);
 
     ProductFeatures.insertMany(fakeData)
@@ -18,4 +17,9 @@ const { fakeDataGenerator } = require('./fakeDataGenerator.js');
     console.log(error);
     mongoose.connection.close();
   }
-})();
+};
+
+// load seedDatabase with (recordsToCreate, startingRecordID)
+seedDatabase(100, 1000);
+
+module.exports.seedDatabase = seedDatabase;
