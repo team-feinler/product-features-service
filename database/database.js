@@ -9,9 +9,6 @@ mongoose.connect('mongodb://localhost/fec_product_features', {
 });
 
 db.on('error', console.error.bind(console, 'connection error:'));
-db.once('open', function() {
-  console.log('Mongoose connected established.');
-});
 
 const productFeaturesSchema = new mongoose.Schema({
   productId: {
@@ -28,7 +25,7 @@ const productFeaturesSchema = new mongoose.Schema({
   }],
   featureSetup: {
     header: String,
-    description: []
+    description: [{type: String}]
   },
   additionalFeatures: {
     header: String,
@@ -42,4 +39,17 @@ const productFeaturesSchema = new mongoose.Schema({
 
 const ProductFeatures = mongoose.model('ProductFeatures', productFeaturesSchema);
 
-module.exports = ProductFeatures;
+const load = (productId, callback) => {
+  ProductFeatures.find({ productId: productId })
+    .exec((err, data) => {
+      if (err) {
+        console.log(`Error loading product ${productId} from database`);
+        callback(err);
+      } else {
+        callback(null, data);
+      }
+    });
+}
+
+module.exports.ProductFeatures = ProductFeatures;
+module.exports.load = load;
