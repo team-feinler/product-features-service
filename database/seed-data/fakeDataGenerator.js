@@ -1,9 +1,9 @@
 const faker = require('faker');
 
-let fakeHeader = () => (faker.lorem.sentence().slice(0, -1));
-let fakeSentence = () => (faker.lorem.sentence());
-let fakeDescription = () => (faker.lorem.sentences());
-let fakeTitle = () => (faker.name.jobArea());
+let fakeHeader = () => faker.lorem.sentence().slice(0, -1);
+let fakeSentence = () => faker.lorem.sentence();
+let fakeDescription = () => faker.lorem.sentences();
+let fakeTitle = () => faker.name.jobArea();
 
 let fakeDataGenerator = (recordsToCreate, startingRecordID) => {
 
