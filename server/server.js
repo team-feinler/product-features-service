@@ -22,7 +22,7 @@ app.get('/product-features/:id', (req, res) => {
   console.log(`Requesting product ${productId} from the database.`)
   db.load(productId, (err, data) => {
     if (err) {
-      console.log('Error loading data');
+      res.sendStatus(404);
     }
     res.json(data);
   });
