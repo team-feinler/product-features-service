@@ -32,10 +32,19 @@ const ProductFeatures = mongoose.model('ProductFeatures', productFeaturesSchema)
 const load = (productId, callback) => {
   ProductFeatures.find({ productId: productId })
     .exec((err, data) => {
+      // if error, return error
       if (err) {
         console.log(`Error loading product ${productId} from database`, err);
         callback(err);
-      } else {
+      }
+      // else if product does not exist, create and send error
+      // db.collections.find() does not return error when no query match
+      else if (data[0] === undefined || !data[0].productId) {
+        console.log(`Error: product ${productId} does not exist`);
+        callback(new Error('Product not found!'));
+      }
+      // else document record at productId exists, so send data
+      else {
         callback(null, data);
       }
     });
