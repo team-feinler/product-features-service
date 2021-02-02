@@ -7,7 +7,7 @@ const productFeaturesSchema = new mongoose.Schema({
   },
   banner: {
     header: String,
-    text: String
+    text: [{type: String}]
   },
   features: [{
     header: String,

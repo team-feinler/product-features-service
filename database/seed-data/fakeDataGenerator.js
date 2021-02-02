@@ -18,7 +18,7 @@ let fakeDataGenerator = (recordsToCreate, startingRecordID) => {
       productId: startingRecordID,
       banner: {
         header: fakeHeader(),
-        text: fakeDescription()
+        text: [fakeDescription(), fakeDescription()]
       },
       features: [
         {
@@ -52,7 +52,7 @@ let fakeDataGenerator = (recordsToCreate, startingRecordID) => {
       ],
       featureSetup: {
         header: fakeHeader(),
-        description: [fakeSentence(), fakeSentence(), fakeSentence()]
+        description: ['1. ' + fakeSentence(), '2. ' + fakeSentence(), '3. '+ fakeSentence()]
       },
       additionalFeatures: {
         header: fakeHeader(),
