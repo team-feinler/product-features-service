@@ -1,26 +1,3 @@
-body {
-  font-family:'Amazon Ember', Arial, sans-serif;
-}
-
-h2 {
-  font-weight: 400;
-  font-size: 40px;
-  line-height: 48px;
-  letter-spacing: -1px;
-}
-
-h4 {
-  font-weight: 400;
-  font-size: 24px;
-  line-height: 28px;
-  letter-spacing: -.3px;
-  margin-bottom: 5px;
-}
-
-p {
-  font-size: 16px;
-}
-
 .product-features {
   max-width: 1504px;
   margin: 0px auto 0px auto;
@@ -79,10 +56,8 @@ p {
 
 .feature-logo-banner {
   display: block;
-  margin-left: auto;
-  margin-right: auto;
   width: 960px;
-  margin-bottom: 30px;
+  margin: 30px auto 30px auto;
 }
 
 .feature-block-1 {
@@ -118,13 +93,13 @@ p {
 }
 
 .feature-block-3 {
-  display: flex;
-  flex-direction: column;
+  position: relative;
   max-width: 300px;
-  margin-left: 185px;
+  margin-left: 300px;
 }
 
 .feature-block-3-background {
+  min-width: 1504px;
   height: 568px;
   background-position: center;
   background-size: cover;
@@ -133,6 +108,7 @@ p {
 }
 
 .feature-block-4-background {
+  min-width: 1504px;
   display: flex;
   flex-direction: row-reverse;
   height: 568px;
@@ -143,15 +119,13 @@ p {
 }
 
 .feature-block-4 {
-  min-height: 568px;
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  width: 330px;
-  margin-right: 185px;
+  position: relative;
+  max-width: 330px;
+  margin-right: 300px;
 }
 
 .feature-block-5-background {
+  min-width: 1504px;
   height: 568px;
   background-position: center;
   background-size: cover;
@@ -160,8 +134,9 @@ p {
 }
 
 .feature-block-5 {
+  position: relative;
   width: 320px;
-  margin-left: 170px;
+  margin-left: 280px;
   padding-top: 50px;
 }
 
@@ -192,6 +167,7 @@ p {
 }
 
 .feature-block-7-text {
+  margin-left: 20px;
   width: 300px;
 }
 
