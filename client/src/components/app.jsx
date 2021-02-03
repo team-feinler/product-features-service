@@ -32,11 +32,10 @@ class ProductFeatures extends Component {
   }
 
   getProductPhotos(productId) {
-    axios.get(`/photos/id/${productId}`)
-    .then(res => res.json())
+    axios.get(`http://localhost:4002/photos/features/${productId}`)
     .then((response) => {
       this.setState({
-        productPhotos: response.productUrls
+        productPhotos: response.data.featuresUrls
       });
     })
     .catch((error) => {
@@ -48,7 +47,7 @@ class ProductFeatures extends Component {
     const productId = window.location.pathname.split('/')[1] || 1000;
     console.log('productId:', productId);
     this.getProductFeatures(productId);
-    // this.getProductPhotos(productId); // pending service availability
+    this.getProductPhotos(productId); // pending service availability
   }
 
   render() {
