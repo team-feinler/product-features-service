@@ -9,21 +9,17 @@ import AdditionalFeatures from './additionalFeatures.jsx';
 import GlobalStyles from '../globalStyles.js'
 import dummyImages from '../dummyImages.js';
 
-class App extends Component {
+class ProductFeatures extends Component {
   constructor(props) {
     super(props);
     this.state = {
       productFeatures: [],
       productPhotos: dummyImages // pending call to photos service in componentDidMount()
     }
-
-    this.getProductFeatures = this.getProductFeatures.bind(this);
   }
 
   getProductFeatures(productId) {
-    axios.get(`/product-features/${productId}`, {
-        params: { productId: productId }
-      })
+    axios.get(`http://localhost:4000/product-features/${productId}`)
       .then((response) => {
         console.log(response.data);
         this.setState({
@@ -31,7 +27,7 @@ class App extends Component {
         });
       })
       .catch((error) => {
-        console.log('Error:', error);
+        console.log(error);
       });
   }
 
@@ -49,7 +45,8 @@ class App extends Component {
   }
 
   componentDidMount() {
-    const productId = window.location.pathname.split('/')[1];
+    const productId = window.location.pathname.split('/')[1] || 1000;
+    console.log('productId:', productId);
     this.getProductFeatures(productId);
     // this.getProductPhotos(productId); // pending service availability
   }
@@ -80,4 +77,4 @@ class App extends Component {
   }
 }
 
-export default App;
+export default ProductFeatures;
