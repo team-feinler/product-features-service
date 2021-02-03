@@ -1,10 +1,25 @@
 const express = require('express');
 const app = express();
 const port = 4000;
+const cors = require('cors');
 const mongoose = require('mongoose');
 const db = require('../database/database.js');
 
-app.use('/:id', express.static(__dirname + '/../client/dist'));
+app.use(cors());
+
+// keeping for development
+// app.use('/', express.static(__dirname + '/../client/dist'));
+// app.use('/:id', express.static(__dirname + '/../client/dist'));
+
+// use for proxy server
+app.use('/', express.static(__dirname + '/../public'));
+app.use('/:id', express.static(__dirname + '/../public'));
+
+const corsOptions = {
+  origin: 'http://localhost:3000',
+  optionsSuccessStatus: 200
+}
+
 
 // open mongoose connection
 mongoose.connect('mongodb://localhost/fec_product_features', {
@@ -18,7 +33,9 @@ mongoose.connection.on('error', console.error.bind(console, 'connection error:')
 
 // express middleware
 app.get('/product-features/:id', (req, res) => {
-  let productId = req.query.productId;
+  // console.log(req)
+  // let productId = req.query.productId;
+  const productId = req.params.id;
   console.log(`Requesting product ${productId} from the database.`)
   db.load(productId, (err, data) => {
     if (err) {
