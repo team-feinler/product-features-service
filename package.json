@@ -13,7 +13,7 @@
   },
   "scripts": {
     "mocha-tests": "./node_modules/mocha/bin/mocha --timeout 5000 --no-deprecation",
-    "test": "jest",
+    "test": "jest -u",
     "seeder": "node database/seed-data/seeder.js",
     "build": "webpack --config webpack.config.js --watch",
     "server-dev": "nodemon server/server.js"
