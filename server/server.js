@@ -33,8 +33,6 @@ mongoose.connection.on('error', console.error.bind(console, 'connection error:')
 
 // express middleware
 app.get('/product-features/:id', (req, res) => {
-  // console.log(req)
-  // let productId = req.query.productId;
   const productId = req.params.id;
   console.log(`Requesting product ${productId} from the database.`)
   db.load(productId, (err, data) => {
