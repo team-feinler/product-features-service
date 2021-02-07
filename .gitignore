@@ -22,6 +22,5 @@ coverage
 
 # Compiled Dirs (http://nodejs.org/api/addons.html)
 client/dist/bundle.js
-public/
-!index.html
+public/productFeatures_bundle.js
 __snapshots__
