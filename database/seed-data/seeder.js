@@ -1,25 +1,39 @@
 const mongoose = require('mongoose');
 const ProductFeatures = require('../database.js');
 const { fakeDataGenerator } = require('./fakeDataGenerator.js');
+const { fakeDataRecord } = require('./fakeDataRecord.js');
 
 async function seedDatabase(recordsToCreate, startingRecordID) {
   try {
     let fakeData = await fakeDataGenerator(recordsToCreate, startingRecordID);
-    console.log(`Seeding database with ${fakeData.length} record(s).`);
 
-    mongoose.connect('mongodb://localhost/fec_product_features', {
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
-      useFindAndModify: false,
-      useCreateIndex: true
-    });
+    (async () => {
+      try {
+        await mongoose.connect('mongodb://localhost/fec_product_features', {
+          useNewUrlParser: true,
+          useUnifiedTopology: true,
+          useFindAndModify: false,
+          useCreateIndex: true
+        });
+      } catch (error) {
+        console.log('connection error', err);
+      }
+    })();
 
-    mongoose.connection.on('error', console.error.bind(console, 'connection error:'));
     mongoose.connection.once('open', () => console.log('Mongoose connection established for seeding.'));
 
+    await ProductFeatures.deleteMany({});
+    console.log('Clearning ProductFeatures database collection before seeding.');
+
+    console.log(`Seeding database with ${fakeData.length} record(s).`);
     ProductFeatures.insertMany(fakeData)
+    .then(() => {
+      return ProductFeatures.findOneAndUpdate({ productId: startingRecordID }, fakeDataRecord, {
+        returnOriginal: false
+      })
+    })
     .then(() => console.log('Database seeding complete.'))
-    .catch((err) => console.log('Error seeding database', err))
+    .catch((err) => console.log('Error seeding database.', err))
     .finally(() => mongoose.connection.close());
   }
   catch(error) {

@@ -21,6 +21,6 @@ coverage
 .grunt
 
 # Compiled Dirs (http://nodejs.org/api/addons.html)
-build/
 client/dist/bundle.js
 public/productFeatures_bundle.js
+__snapshots__
