@@ -24,3 +24,6 @@ coverage
 client/dist/bundle.js
 public/productFeatures_bundle.js
 __snapshots__
+
+#keyfile
+*.pem
