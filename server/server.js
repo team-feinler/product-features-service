@@ -27,7 +27,7 @@ app.get('/product-features/:id', (req, res) => {
 });
 
 const server = app.listen(port, () => {
-  console.log(`Express server listening at http://localhost:${port}`);
+  console.log(`Express server for Product Features Service listening at port ${port}`);
 });
 
 module.exports = server;
