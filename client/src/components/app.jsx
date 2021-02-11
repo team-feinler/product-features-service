@@ -33,10 +33,11 @@ class ProductFeatures extends Component {
   }
 
   getProductPhotos(productId) {
-    axios.get(`http://localhost:4002/photos/id/${productId}`)
+    axios.get(`http://localhost:4002/photos/features/${productId}`)
     .then((response) => {
+      console.log(response)
       this.setState({
-        productPhotos: response.data.productUrls
+        productPhotos: response.data.featuresUrls
       });
     })
     .catch((error) => {
