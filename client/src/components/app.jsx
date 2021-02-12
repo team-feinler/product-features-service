@@ -21,7 +21,7 @@ class ProductFeatures extends Component {
   }
 
   getProductFeatures(productId) {
-    axios.get(`http://localhost:4000/product-features/${productId}`)
+    axios.get(`http://13.59.242.181:4000/product-features/${productId}`)
       .then((response) => {
         this.setState({
           productFeatures: response.data
