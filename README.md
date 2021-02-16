@@ -1,6 +1,6 @@
-# Project Name
+# Amazon Product Page - Product Features
 
-> Project description
+> Front End Capstone (FEC) Project
 
 ## Related Projects
 
