@@ -21,7 +21,7 @@ jobs:
       - run:
           name: AWS EC2 Deployment
           command: |
-            ssh -o StrictHostKeyChecking=no ubuntu@3.21.59.121 \
+            ssh -o StrictHostKeyChecking=no ubuntu@ec2-3-21-59-121.us-east-2.compute.amazonaws.com \
             "echo Starting deployment && \
             cd ~/product-features-service && \
             git checkout deploy-prep-2 && \
