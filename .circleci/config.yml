@@ -26,7 +26,7 @@ jobs:
             cd ~/product-features-service && \
             git checkout deploy-prep-2 && \
             git pull origin deploy-prep-2 && \
-            npm i && \
+            npm install && \
             npm run build && \
             pm2 stop build/server && \
             pm2 start build/server && \
