@@ -5,10 +5,10 @@ jobs:
       - image: circleci/node:12.18.3
       - image: circleci/mongo:4.4.1
     steps:
-      - run
+      - run:
           name: Install dependencies
           command: npm install
-      - run
+      - run:
           name: Run tests
           command: npm test
   deploy:
