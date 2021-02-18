@@ -30,18 +30,6 @@ jobs:
             npm run build && \
             echo Deployment ending && \
             exit"
-      - run:
-          name: AWS EC2 Deploy-Production
-          command: |
-            ssh -o StrictHostKeyChecking=no ubuntu@ec2-3-21-59-121.us-east-2.compute.amazonaws.com \
-            "echo Starting deployment && \
-            cd ~/product-features-service && \
-            git checkout main && \
-            git pull origin main && \
-            npm install && \
-            npm run build && \
-            echo Deployment ending && \
-            exit"
 workflows:
   version: 2.1
   build-and-deploy:
