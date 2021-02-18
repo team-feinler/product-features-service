@@ -28,8 +28,6 @@ jobs:
             git pull origin develop && \
             npm install && \
             npm run build && \
-            pm2 stop server/server.js && \
-            pm2 start server/server.js && \
             echo Deployment ending && \
             exit"
       - run:
@@ -42,8 +40,6 @@ jobs:
             git pull origin main && \
             npm install && \
             npm run build && \
-            pm2 stop server/server.js && \
-            pm2 start server/server.js && \
             echo Deployment ending && \
             exit"
 workflows:
