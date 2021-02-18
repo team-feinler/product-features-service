@@ -16,7 +16,9 @@
     "test": "jest -u",
     "seeder": "node database/seed-data/seeder.js",
     "build-dev": "webpack --config webpack.config.js --watch",
-    "server-dev": "nodemon server/server.js"
+    "build": "webpack --config webpack.config.js",
+    "server-dev": "nodemon server/server.js",
+    "server": "node server/server.js"
   },
   "dependencies": {
     "axios": "^0.21.1",
@@ -25,6 +27,7 @@
     "express": "^4.17.1",
     "faker": "^5.1.0",
     "mongoose": "^5.11.12",
+    "pm2": "^4.5.4",
     "react": "^17.0.1",
     "react-dom": "^17.0.1",
     "request": "^2.88.2"

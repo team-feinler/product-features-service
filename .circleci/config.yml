@@ -1,7 +1,40 @@
 version: 2.1
-orbs:
-  node: circleci/node@3.0.0
+jobs:
+  build:
+    docker:
+      - image: circleci/node:12.18.3
+      - image: circleci/mongo:4.4.1
+    working_directory: ~/product-features-service
+    steps:
+      - checkout
+      - run:
+          name: Install dependencies
+          command: npm install
+      - run:
+          name: Run tests
+          command: npm test
+  deploy:
+    docker:
+      - image: circleci/node:12.18.3
+      - image: circleci/mongo:4.4.1
+    steps:
+      - run:
+          name: AWS EC2 Deploy-Development
+          command: |
+            ssh -o StrictHostKeyChecking=no ubuntu@ec2-3-21-59-121.us-east-2.compute.amazonaws.com \
+            "echo Starting deployment && \
+            cd ~/product-features-service && \
+            git checkout develop && \
+            git pull origin develop && \
+            npm install && \
+            npm run build && \
+            echo Deployment ending && \
+            exit"
 workflows:
-  node-tests:
+  version: 2.1
+  build-and-deploy:
     jobs:
-      - node/test
+      - build
+      - deploy:
+          requires:
+            - build
