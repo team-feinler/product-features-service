@@ -7,7 +7,6 @@ import Features from './features.jsx';
 import Setup from './setup.jsx';
 import AdditionalFeatures from './additionalFeatures.jsx';
 import GlobalStyles from '../globalStyles.js';
-// import Spinner from './spinner.gif';
 import dummyImages from '../dummyImages.js';
 
 class ProductFeatures extends Component {
@@ -16,7 +15,7 @@ class ProductFeatures extends Component {
     this.state = {
       productFeatures: [],
       productPhotos: dummyImages,
-      isLoading: true
+      httpStatusCode: null
     }
   }
 
@@ -28,6 +27,9 @@ class ProductFeatures extends Component {
         });
       })
       .catch((error) => {
+        this.setState({
+          httpStatusCode: 404
+        })
         console.log(error);
       });
   }
@@ -41,7 +43,7 @@ class ProductFeatures extends Component {
       });
     })
     .catch((error) => {
-      console.log('Error:', error);
+      console.log('GET product photos error:', error);
     });
   }
 
@@ -49,33 +51,32 @@ class ProductFeatures extends Component {
     const productId = window.location.pathname.split('/')[1] || 1000;
     await this.getProductFeatures(productId);
     await this.getProductPhotos(productId);
-    this.setState({isLoading: false});
   }
 
   render() {
     const text = this.state.productFeatures[0];
     const img = this.state.productPhotos;
+
     return (
-      (this.state.isLoading
-        ? <div>Loading...</div>
-        : (text === undefined
-            ? <h1 style={{textAlign: 'center'}}>Product Features Service Unavailable 404</h1>
-            : <div>
-                <GlobalStyles />
-                <Banner
-                  bannerText={text.banner}
-                  bannerImage={img} />
-                <Features
-                  featuresText={text.features}
-                  featuresPhotos={img} />
-                <Setup
-                  featuresText={text.featureSetup}
-                  featuresSetupPhotos={img} />
-                <AdditionalFeatures
-                  additionalFeaturesText={text.additionalFeatures}
-                  additionalFeaturesPhotos={img} />
-              </div>
-          )
+      (this.state.httpStatusCode === 404
+      ? <h1 style={{textAlign: 'center'}}>Product Features Service Unavailable 404</h1>
+      : this.state.productFeatures.length === 0
+      ? <div>Loading...</div>
+      : <div>
+          <GlobalStyles />
+          <Banner
+            bannerText={text.banner}
+            bannerImage={img} />
+          <Features
+            featuresText={text.features}
+            featuresPhotos={img} />
+          <Setup
+            featuresText={text.featureSetup}
+            featuresSetupPhotos={img} />
+          <AdditionalFeatures
+            additionalFeaturesText={text.additionalFeatures}
+            additionalFeaturesPhotos={img} />
+        </div>
       )
     )
   }
