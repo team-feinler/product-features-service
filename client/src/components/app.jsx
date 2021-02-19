@@ -33,7 +33,7 @@ class ProductFeatures extends Component {
   }
 
   getProductPhotos(productId) {
-    axios.get(`http://localhost:4002/photos/features/${productId}`)
+    axios.get(`https://fec-blitva-photos.s3.us-east-2.amazonaws.com:4002/photos/features/${productId}`)
     .then((response) => {
       console.log(response)
       this.setState({
@@ -48,7 +48,7 @@ class ProductFeatures extends Component {
   async componentDidMount() {
     const productId = window.location.pathname.split('/')[1] || 1000;
     await this.getProductFeatures(productId);
-    // this.getProductPhotos(productId); // pending service availability
+    await this.getProductPhotos(productId);
     this.setState({isLoading: false});
   }
 
