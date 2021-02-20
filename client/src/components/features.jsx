@@ -65,7 +65,7 @@ const Features = (props) => {
 
       {/* Section 7 */}
       <BottomBlock>
-      <img style={{height: '454px'}} src={photos[8]}></img>
+      <img style={{height: '454px', width: 'auto'}} src={photos[8]}></img>
           <div style={{marginLeft: '20px', width: '300px'}}>
             <h2>{text[6].header}</h2>
             <p>{text[6].description}</p>
