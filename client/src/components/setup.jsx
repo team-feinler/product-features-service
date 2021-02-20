@@ -39,7 +39,7 @@ const Setup = (props) => {
         {instructions.map((item, i) => {
           return (
             <Item key={i}>
-              <img src={photos[i]}></img>
+              <img src={photos[i]} style={{height: 'auto', width: 'auto'}}></img>
               <p style={pStyle}>{item}</p>
             </Item>
           )
