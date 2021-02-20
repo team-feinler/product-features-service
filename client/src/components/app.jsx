@@ -35,7 +35,7 @@ class ProductFeatures extends Component {
   }
 
   getProductPhotos(productId) {
-    axios.get(`http://ec2-3-15-164-34.us-east-2.compute.amazonaws.com:4002/photos/features/${productId}`)
+    axios.get(`http://ec2-3-136-203-39.us-east-2.compute.amazonaws.com:4002/photos/features/${productId}`)
     .then((response) => {
       console.log(response)
       this.setState({

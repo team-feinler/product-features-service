@@ -8,8 +8,8 @@ const GlobalStyles = createGlobalStyle`
   }
 
   h2 {
-    font-weight: 400;
-    font-size: 40px;
+    font-weight: 400!important;
+    font-size: 40px!important;
     line-height: 48px;
     letter-spacing: -1px;
   }
