@@ -10,11 +10,16 @@ export const BlockHeader = styled.h2`
   display: flex;
   max-width: 380px;
   margin-right: 20px;
+  font-weight: 400;
+  font-size: 40px;
+  line-height: 48px;
+  letter-spacing: -1px;
 `;
 
 export const BlockText = styled.p`
   max-width: 380px;
   margin: auto 0 auto 20px;
+  font-size: 16px;
 `;
 
 export const Block1Photo = styled.img`
@@ -90,6 +95,9 @@ export const BottomBlock = styled.div`
   justify-content: center;
 `;
 
-export const BottomBlockText = styled.div`
-
+export const H2 = styled.h2`
+  font-weight: 400;
+  font-size: 40px;
+  line-height: 48px;
+  letter-spacing: -1px;
 `;

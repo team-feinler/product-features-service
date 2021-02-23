@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { Block1, BlockHeader, BlockText, Block1Photo,
   LargeBlock, LargeBlockWrapper, LargeBlockContent, Banner,
   NarrowBlockLeftText, NarrowBlockLeftContent, NarrowBlockRightText,
-  NarrowBlockRightContent, BottomBlock } from './features.styled.js';
+  NarrowBlockRightContent, BottomBlock, H2 } from './features.styled.js';
 
 
 const Features = (props) => {
@@ -23,7 +23,7 @@ const Features = (props) => {
       <LargeBlock style={{ backgroundImage: `url(${photos[3]})`}}>
         <LargeBlockWrapper>
           <LargeBlockContent>
-            <h2>{text[1].header}</h2>
+            <H2>{text[1].header}</H2>
             <p>{text[1].description}</p>
           </LargeBlockContent>
         </LargeBlockWrapper>
@@ -32,7 +32,7 @@ const Features = (props) => {
       {/* Section 3 */}
       <NarrowBlockLeftText style={{ backgroundImage: `url(${photos[4]})`}}>
         <NarrowBlockLeftContent>
-          <h2>{text[2].header}</h2>
+          <H2>{text[2].header}</H2>
           <p>{text[2].description}</p>
         </NarrowBlockLeftContent>
       </NarrowBlockLeftText>
@@ -40,7 +40,7 @@ const Features = (props) => {
       {/* Section 4 */}
       <NarrowBlockRightText style={{ backgroundImage: `url(${photos[5]})`}}>
         <NarrowBlockRightContent>
-          <h2>{text[3].header}</h2>
+          <H2>{text[3].header}</H2>
           <p>{text[3].description}</p>
         </NarrowBlockRightContent>
       </NarrowBlockRightText>
@@ -48,7 +48,7 @@ const Features = (props) => {
       {/* Section 5 */}
       <NarrowBlockLeftText style={{ backgroundImage: `url(${photos[6]})`}}>
         <NarrowBlockLeftContent>
-          <h2>{text[4].header}</h2>
+          <H2>{text[4].header}</H2>
           <p>{text[4].description}</p>
         </NarrowBlockLeftContent>
       </NarrowBlockLeftText>
@@ -57,7 +57,7 @@ const Features = (props) => {
       <LargeBlock style={{ backgroundImage: `url(${photos[7]})`}}>
         <LargeBlockWrapper>
           <LargeBlockContent>
-            <h2>{text[5].header}</h2>
+            <H2>{text[5].header}</H2>
             <p>{text[5].description}</p>
           </LargeBlockContent>
         </LargeBlockWrapper>
@@ -67,7 +67,7 @@ const Features = (props) => {
       <BottomBlock>
       <img style={{height: '454px', width: 'auto'}} src={photos[8]}></img>
           <div style={{marginLeft: '20px', width: '300px'}}>
-            <h2>{text[6].header}</h2>
+            <H2>{text[6].header}</H2>
             <p>{text[6].description}</p>
           </div>
       </BottomBlock>

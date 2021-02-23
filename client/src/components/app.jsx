@@ -6,8 +6,13 @@ import Banner from './banner.jsx';
 import Features from './features.jsx';
 import Setup from './setup.jsx';
 import AdditionalFeatures from './additionalFeatures.jsx';
-import GlobalStyles from '../globalStyles.js';
 import dummyImages from '../dummyImages.js';
+
+const ProductFeaturesStyle = styled.div`
+  font-family:'Amazon Ember', Arial, sans-serif;
+  max-width: 1504px;
+  margin: 0px auto 0px auto;
+`;
 
 class ProductFeatures extends Component {
   constructor(props) {
@@ -62,8 +67,7 @@ class ProductFeatures extends Component {
       ? <h1 style={{textAlign: 'center'}}>Product Features Service Unavailable 404</h1>
       : this.state.productFeatures.length === 0
       ? <div>Loading...</div>
-      : <div>
-          <GlobalStyles />
+      : <ProductFeaturesStyle>
           <Banner
             bannerText={text.banner}
             bannerImage={img} />
@@ -76,7 +80,7 @@ class ProductFeatures extends Component {
           <AdditionalFeatures
             additionalFeaturesText={text.additionalFeatures}
             additionalFeaturesPhotos={img} />
-        </div>
+        </ProductFeaturesStyle>
       )
     )
   }
