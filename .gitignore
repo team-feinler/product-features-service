@@ -23,6 +23,7 @@ coverage
 # Compiled Dirs (http://nodejs.org/api/addons.html)
 client/dist/bundle.js
 public/productFeatures_bundle.js
+public/productFeatures_bundle.js.LICENSE.txt
 __snapshots__
 
 #keyfile
