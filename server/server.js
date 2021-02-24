@@ -17,7 +17,6 @@ const corsOptions = {
 
 app.get('/product-features/:id', (req, res) => {
   const productId = req.params.id;
-  console.log(`Requesting product ${productId} from the database.`)
   db.load(productId, (err, data) => {
     if (err) {
       res.sendStatus(404);
