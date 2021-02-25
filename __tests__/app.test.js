@@ -1,8 +1,8 @@
 import React from 'react';
 import { shallow, mount, configure } from 'enzyme';
 import Adapter from 'enzyme-adapter-react-16';
-import ProductFeatures from '../client/src/components/app.jsx';
-import DummyProductPhotos from '../client/src/dummyImages.js';
+import ProductFeatures from '../client/components/app.jsx';
+import DummyProductPhotos from '../client/dummyImages.js';
 import renderer from 'react-test-renderer';
 import { enableFetchMocks } from 'jest-fetch-mock'
 enableFetchMocks()
