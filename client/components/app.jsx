@@ -25,36 +25,35 @@ class ProductFeatures extends Component {
   }
 
   getProductFeatures(productId) {
-    axios.get(`http://ec2-3-21-59-121.us-east-2.compute.amazonaws.com:4000/product-features/${productId}`)
-      .then((response) => {
-        this.setState({
-          productFeatures: response.data
-        });
-      })
-      .catch((error) => {
-        this.setState({
-          httpStatusCode: 404
-        })
-        console.log(error);
-      });
+    return axios.get(`http://localhost:4000/product-features/${productId}`)
   }
 
   getProductPhotos(productId) {
-    axios.get(`http://ec2-3-136-203-39.us-east-2.compute.amazonaws.com:4002/photos/features/${productId}`)
-    .then((response) => {
-      this.setState({
-        productPhotos: response.data.featuresUrls
-      });
-    })
-    .catch((error) => {
-      console.log('GET product photos error:', error);
-    });
+    return axios.get(`http://localhost:4002/photos/features/${productId}`)
   }
 
-  async componentDidMount() {
+  fetchData(productId) {
+    Promise.all([
+      this.getProductFeatures(productId),
+      this.getProductPhotos(productId)
+    ])
+    .then((res) => {
+      this.setState({
+        productFeatures: res[0].data,
+        productPhotos: res[1].data.featuresUrls
+      })
+    })
+    .catch((err) => {
+      this.setState({
+        httpStatusCode: 404
+      })
+      console.log(err);
+    })
+  }
+
+  componentDidMount() {
     const productId = window.location.pathname.split('/')[1] || 1000;
-    await this.getProductFeatures(productId);
-    await this.getProductPhotos(productId);
+    this.fetchData(productId);
   }
 
   render() {
