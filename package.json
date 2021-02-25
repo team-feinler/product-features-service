@@ -15,10 +15,10 @@
     "mocha-tests": "./node_modules/mocha/bin/mocha --timeout 5000 --no-deprecation",
     "test": "jest -u",
     "seeder": "node database/seed-data/seeder.js",
-    "build-dev": "webpack --config webpack.config.js --watch",
-    "build": "webpack --config webpack.config.js",
-    "server-dev": "nodemon server/server.js",
-    "server": "node server/server.js"
+    "react-dev": "webpack --mode=development --watch",
+    "start-dev": "nodemon server/server.js",
+    "build": "webpack --mode=production",
+    "start": "node server/server.js"
   },
   "dependencies": {
     "axios": "^0.21.1",

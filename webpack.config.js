@@ -1,9 +1,8 @@
 const path = require('path');
-const SRC_DIR = path.join(__dirname, '/client/src');
+const SRC_DIR = path.join(__dirname, '/client');
 const DIST_DIR = path.join(__dirname, 'public');
 
 module.exports = {
-  mode: "production",
   entry: `${SRC_DIR}/index.jsx`,
   output: {
     filename: 'productFeatures_bundle.js',
