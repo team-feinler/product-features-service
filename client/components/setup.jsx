@@ -23,6 +23,17 @@ const Item = styled(Header)`
   margin-right: 10px;
 `;
 
+const H2 = styled.h2`
+  font-weight: 400;
+  font-size: 40px;
+  line-height: 48px;
+  letter-spacing: -1px;
+`;
+
+const P = styled.p`
+  font-size: 16px;
+`;
+
 
 const Setup = (props) => {
   const header = props.featuresText.header;
@@ -33,14 +44,14 @@ const Setup = (props) => {
   return (
     <StyledSetup>
       <Header>
-        <h2>{header}</h2>
+        <H2>{header}</H2>
       </Header>
       <Row>
         {instructions.map((item, i) => {
           return (
             <Item key={i}>
-              <img src={photos[i]}></img>
-              <p style={pStyle}>{item}</p>
+              <img src={photos[i]} style={{height: 'auto', width: 'auto'}}></img>
+              <P style={pStyle}>{item}</P>
             </Item>
           )
         })}

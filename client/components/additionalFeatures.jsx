@@ -32,6 +32,22 @@ const Item = styled.div`
   margin-right: 10px;
 `;
 
+const H2 = styled.h2`
+  font-weight: 400;
+  font-size: 40px;
+  line-height: 48px;
+  letter-spacing: -1px;
+  text-align: center;
+`;
+
+const H4 = styled.h4`
+  font-weight: 400;
+  font-size: 24px;
+  line-height: 28px;
+  letter-spacing: -.3px;
+  margin-bottom: 5px;
+`;
+
 const AdditionalFeatures = (props) => {
   const header = props.additionalFeaturesText.header;
   const description = props.additionalFeaturesText.description;
@@ -43,14 +59,14 @@ const AdditionalFeatures = (props) => {
 
   return (
     <StyledAdditionalFeatures>
-      <h2 style={{textAlign: 'center'}}>{header}</h2>
+      <H2>{header}</H2>
       <Text>{description}</Text>
       <Row>
         {row1text.map((item, i) => {
           return (
             <Item key={i}>
               <Icon src={row1images[i]}></Icon>
-              <h4>{item.title}</h4>
+              <H4>{item.title}</H4>
               <p style={pStyle}>{item.description}</p>
             </Item>
           )
@@ -62,7 +78,7 @@ const AdditionalFeatures = (props) => {
             <div key={i}>
               <Icon src={row2images[i]}></Icon>
               <Item>
-                <h4>{item.title}</h4>
+                <H4>{item.title}</H4>
                 <p style={pStyle}>{item.description}</p>
               </Item>
             </div>

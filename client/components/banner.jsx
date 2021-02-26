@@ -10,6 +10,10 @@ const Header = styled.h2`
   padding: 45px 0px 0px 0px;
   display: flex;
   justify-content: center;
+  font-weight: 400;
+  font-size: 40px;
+  line-height: 48px;
+  letter-spacing: -1px;
 `;
 
 const BannerBackground = styled.div`
@@ -32,6 +36,7 @@ const TextblockLeft = styled.p`
 
 const TextblockRight = styled.p`
   max-width: 380px;
+  font-size: 16px;
 `;
 
 const Banner = (props) => {

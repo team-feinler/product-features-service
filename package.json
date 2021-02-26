@@ -15,10 +15,10 @@
     "mocha-tests": "./node_modules/mocha/bin/mocha --timeout 5000 --no-deprecation",
     "test": "jest -u",
     "seeder": "node database/seed-data/seeder.js",
-    "build-dev": "webpack --config webpack.config.js --watch",
-    "build": "webpack --config webpack.config.js",
-    "server-dev": "nodemon server/server.js",
-    "server": "node server/server.js"
+    "react-dev": "webpack --mode=development --watch",
+    "start-dev": "nodemon server/server.js",
+    "build": "webpack --mode=production",
+    "start": "node server/server.js"
   },
   "dependencies": {
     "axios": "^0.21.1",
@@ -41,6 +41,7 @@
     "babel-loader": "^8.2.2",
     "babel-plugin-styled-components": "^1.12.0",
     "chai": "^4.2.0",
+    "compression-webpack-plugin": "^7.1.2",
     "css-loader": "^5.0.1",
     "enzyme": "^3.11.0",
     "enzyme-adapter-react-16": "^1.15.6",

@@ -7,6 +7,13 @@ const mongoose = require('mongoose');
 const db = require('../database/database.js');
 
 app.use(cors());
+
+app.get('*.js', function (req, res, next) {
+  req.url = req.url + '.gz';
+  res.set('Content-Encoding', 'gzip');
+  next();
+});
+
 app.use('/', express.static(path.join(__dirname + '/../public')));
 app.use('/:id', express.static(path.join(__dirname + '/../public')));
 
@@ -17,7 +24,6 @@ const corsOptions = {
 
 app.get('/product-features/:id', (req, res) => {
   const productId = req.params.id;
-  console.log(`Requesting product ${productId} from the database.`)
   db.load(productId, (err, data) => {
     if (err) {
       res.sendStatus(404);
