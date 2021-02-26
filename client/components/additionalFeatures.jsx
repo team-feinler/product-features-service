@@ -37,6 +37,7 @@ const H2 = styled.h2`
   font-size: 40px;
   line-height: 48px;
   letter-spacing: -1px;
+  textAlign: center;
 `;
 
 const H4 = styled.h4`
@@ -58,7 +59,7 @@ const AdditionalFeatures = (props) => {
 
   return (
     <StyledAdditionalFeatures>
-      <H2 style={{textAlign: 'center'}}>{header}</H2>
+      <H2>{header}</H2>
       <Text>{description}</Text>
       <Row>
         {row1text.map((item, i) => {
