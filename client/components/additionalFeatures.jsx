@@ -37,7 +37,7 @@ const H2 = styled.h2`
   font-size: 40px;
   line-height: 48px;
   letter-spacing: -1px;
-  textAlign: center;
+  text-align: center;
 `;
 
 const H4 = styled.h4`
