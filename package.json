@@ -18,7 +18,7 @@
     "react-dev": "webpack --mode=development --watch",
     "start-dev": "nodemon server/server.js",
     "build": "webpack --watch",
-    "start": "nodemon server/server.js"
+    "start": "nodemon server/start.js"
   },
   "dependencies": {
     "axios": "^0.21.1",

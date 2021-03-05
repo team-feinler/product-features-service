@@ -1,6 +1,5 @@
 const express = require('express');
 const app = express();
-const port = 4000;
 const path = require('path');
 const cors = require('cors');
 const mongoose = require('mongoose');
@@ -25,8 +24,16 @@ app.get('/product-features/:id', (req, res) => {
   });
 });
 
-const server = app.listen(port, () => {
-  console.log(`Express server for Product Features Service listening at port ${port}`);
+app.post('/product-features/:id', () => {
+  // code
 });
 
-module.exports = server;
+app.delete('/product-features/:id', () => {
+  // code
+});
+
+app.put('/product-features/:id', () => {
+  // code
+});
+
+module.exports = app;
