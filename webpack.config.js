@@ -33,6 +33,7 @@ module.exports = {
       },
     ]
   },
+  mode: 'development',
   plugins: [
     new CompressionPlugin({
       filename: "[path][base].gz",
