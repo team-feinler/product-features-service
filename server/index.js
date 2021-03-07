@@ -6,6 +6,7 @@ const mongoose = require('mongoose');
 const db = require('../database/database.js');
 
 app.use(cors());
+app.use(express.json());
 app.use('/', express.static(path.join(__dirname + '/../public')));
 app.use('/:id', express.static(path.join(__dirname + '/../public')));
 
@@ -14,26 +15,52 @@ const corsOptions = {
   optionsSuccessStatus: 200
 }
 
-app.get('/product-features/:id', (req, res) => {
-  const productId = req.params.id;
-  db.load(productId, (err, data) => {
+app.post('/product-features', (req, res) => {
+  const { body: { record } } = req;
+
+  db.insertRecord(record, (err, data) => {
     if (err) {
-      res.sendStatus(404);
+      res.status(500).send(err);
+    } else {
+      res.send(data);
     }
-    res.json(data);
   });
 });
 
-app.post('/product-features/:id', () => {
-  // code
+app.get('/product-features/:id', (req, res) => {
+  const productId = req.params.id;
+
+  db.getRecord(productId, (err, data) => {
+    if (err) {
+      res.status(500).send(err);
+    } else {
+      res.send(data);
+    }
+  });
 });
 
-app.delete('/product-features/:id', () => {
-  // code
+app.put('/product-features', (req, res) => {
+  const { body: { productId, updates } } = req;
+
+  db.updateRecord(productId, updates, (err, data) => {
+    if (err) {
+      res.status(500).send(err);
+    } else {
+      res.send(data);
+    }
+  });
 });
 
-app.put('/product-features/:id', () => {
-  // code
+app.delete('/product-features', (req, res) => {
+  const { body: { productId } } = req;
+
+  db.deleteRecord(productId, (err, data) => {
+    if (err) {
+      res.status(500).send(err);
+    } else {
+      res.send(data);
+    }
+  })
 });
 
 module.exports = app;

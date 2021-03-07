@@ -7,7 +7,7 @@ const request = require('request');
 describe('Express Server', () => {
   describe('Express Middleware', () => {
     it('should return status 200 at "http://localhost:4000/:id"', (done) => {
-      chai.request(require('../server/server.js'))
+      chai.request(require('../server/index.js'))
         .get('/:id')
         .end((err, res) => {
           expect(res.statusCode).to.equal(200);
@@ -16,7 +16,7 @@ describe('Express Server', () => {
     });
 
     it('should GET a single "product feature" record', (done) => {
-      chai.request(require('../server/server.js'))
+      chai.request(require('../server/index.js'))
         .get('/product-features/1000')
         .end((err, res) => {
           expect(res.body).to.be.a('array')
@@ -26,7 +26,7 @@ describe('Express Server', () => {
     });
 
     it('should return 404 for "product feature" record that does not exist', (done) => {
-      chai.request(require('../server/server.js'))
+      chai.request(require('../server/index.js'))
         .get('/product-features/9000')
         .end((err, res) => {
           expect(res.statusCode).to.equal(404);

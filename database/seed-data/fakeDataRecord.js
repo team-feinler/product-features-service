@@ -1,5 +1,5 @@
 const fakeDataRecord = {
-  productId: 1000,
+  productId: 10000001,
   banner: {
     header: 'Meet the all-new Echo',
     text: ['Talk about well-rounded. Echo combines premium sound, a built-in Zigbee smart home hub, and a temperature sensor. Powerful speakers deliver clear highs, dynamic mids, and deep bass for rich, detailed sound that adapts to any room.', 'Just ask Alexa to play music, answer questions, make calls, and tell you the news, sports scores, weather, and more.']
