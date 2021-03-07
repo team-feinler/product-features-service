@@ -40,7 +40,8 @@ An `nvmrc` file is included if using [nvm](https://github.com/creationix/nvm).
 > Method: GET
 > Endpoint: "/product-features:id"
 > Required body: NA
-> Response: Will return 200 if successul, 500 if not
+> Response: Will return 200 and response data if successul, 500 if not
+> Response data format: { productId: INTEGER, banner: OBJECT, features: ARRAY, featureSetup: OBJECT, additionalFeatures: OBJECT }
 
 - PUT
 > Method: PUT
