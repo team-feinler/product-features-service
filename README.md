@@ -28,6 +28,32 @@ An `nvmrc` file is included if using [nvm](https://github.com/creationix/nvm).
 
 ## Development
 
+## Crud API
+
+- POST
+> Method: POST
+> Endpoint: "/product-features"
+> Required body: record to insert
+> Response: Will return 200 if successul, 500 if not or if record already exists
+
+- GET
+> Method: GET
+> Endpoint: "/product-features:id"
+> Required body: NA
+> Response: Will return 200 if successul, 500 if not
+
+- PUT
+> Method: PUT
+> Endpoint: "/product-features"
+> Required body: productId to update, JSON of updates to make in this format - { productId: product_id, updates: { updates_to_make }}
+> Response: Will return 200 if successul, 500 if not or if record doesn't exist
+
+- DELETE
+> Method: DELETE
+> Endpoint: "/product-features"
+> Required body: productId to delete
+> Response: Will return 200 if successul, 500 if not or if record doesn't exists
+
 ### Installing Dependencies
 
 From within the root directory:
