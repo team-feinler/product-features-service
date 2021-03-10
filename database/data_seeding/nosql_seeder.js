@@ -23,9 +23,7 @@ const insertData = (data) => {
 const seedNoSqlData = async (numRecords, pace) => {
 
   await destroyDb('product_features');
-
   await createDb('product_features');
-
   const pf = nano.use('product_features');
 
   // while (numRecords < 0) {
