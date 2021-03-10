@@ -56,9 +56,9 @@ class ProductFeatures extends Component {
     return axios.get(`http://localhost:4000/product-features/${productId}`)
   }
 
-  getProductPhotos(productId) {
-    return axios.get(`http://localhost:4002/photos/features/${productId}`)
-  }
+  // getProductPhotos(productId) {
+  //   return axios.get(`http://localhost:4002/photos/features/${productId}`)
+  // }
 
   fetchData(productId) {
     Promise.all([
@@ -66,6 +66,7 @@ class ProductFeatures extends Component {
       // this.getProductPhotos(productId)
     ])
     .then((res) => {
+      console.log(res[0].data);
       this.setState({
         productFeatures: res[0].data,
         // productPhotos: res[1].data.featuresUrls

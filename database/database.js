@@ -17,7 +17,7 @@ const productFeaturesSchema = new mongoose.Schema({
   },
   banner: {
     header: String,
-    text: [{type: String}]
+    text: [{ type: String }]
   },
   features: [{
     header: String,
@@ -25,7 +25,7 @@ const productFeaturesSchema = new mongoose.Schema({
   }],
   featureSetup: {
     header: String,
-    description: [{type: String}]
+    description: [{ type: String }]
   },
   additionalFeatures: {
     header: String,
@@ -39,26 +39,56 @@ const productFeaturesSchema = new mongoose.Schema({
 
 const ProductFeatures = mongoose.model('ProductFeatures', productFeaturesSchema);
 
-const load = (productId, callback) => {
+const insertRecord = async (record, callback) => {
+  const { productId } = record;
+  const recordExists = await ProductFeatures.count({ productId: productId });
+
+  if (recordExists) {
+    callback(new Error('Record with that product ID already exists'), null);
+  } else {
+    ProductFeatures.create(record, (err, res) => {
+      if (err) {
+        callback(err, null);
+      } else {
+        callback(null, res);
+      }
+    });
+  }
+}
+
+const getRecord = (productId, callback) => {
   ProductFeatures.find({ productId: productId })
     .exec((err, data) => {
-      // if error, return error
-      if (err) {
-        console.log(`Error loading product ${productId} from database`, err);
-        callback(err);
-      }
-      // else if product does not exist, create and send error
-      // db.collections.find() does not return error when no query match
-      else if (data[0] === undefined || !data[0].productId) {
-        console.log(`Error: product ${productId} does not exist`);
-        callback(new Error('Product not found!'));
-      }
-      // else document record at productId exists, so send data
-      else {
+      if (err || data[0] === undefined || !data[0].productId) {
+        callback(err, null);
+      } else {
         callback(null, data);
       }
     });
 }
 
+const updateRecord = async (productId, updates, callback) => {
+  ProductFeatures.findOneAndUpdate({ productId: productId }, updates, (err, res) => {
+    if (err) {
+      callback(err, null);
+    } else {
+      callback(null, res);
+    }
+  });
+}
+
+const deleteRecord = (productId, callback) => {
+  ProductFeatures.deleteOne({ productId: productId }, (err, res) => {
+    if (err) {
+      callback(err, null);
+    } else {
+      callback(null, res);
+    }
+  });
+}
+
 module.exports = ProductFeatures;
-module.exports.load = load;
+module.exports.insertRecord = insertRecord;
+module.exports.getRecord = getRecord;
+module.exports.updateRecord = updateRecord;
+module.exports.deleteRecord = deleteRecord;
