@@ -8,6 +8,9 @@ node_modules/
 public/*
 !public/index.html
 __snapshots__
+nosql_database.config.js
+sql_database.config.js
+api.tests.test.js
 
 #keyfile
 *.pem
