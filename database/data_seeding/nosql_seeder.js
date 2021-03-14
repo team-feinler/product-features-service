@@ -1,14 +1,14 @@
-const { user, password } = require('../../database_configs/nosql_database.config.js');
-const nano = require('nano')(`http://${user}:${password}@localhost:5984`);
+const { userName, password } = require('../../database_configs/nosql_database.config.js');
+const nano = require('nano')(`http://${userName}:${password}@localhost:5984`);
 const { generateData } = require('./data_generator.js');
 
-const seedNoSqlData = async (numRecords, pace, startingId) => {
+const seedNoSqlData = async (numRecords, batchSize, startingId) => {
 
-  if ((numRecords / pace) - Math.floor(numRecords / pace) !== 0) {
-    throw new Error('Number of records must be divisible by pace (ex: 1,000 records at a pace of 100)');
+  if ((numRecords / batchSize) - Math.floor(numRecords / batchSize) !== 0) {
+    throw new Error('Number of records must be divisible by batch size (ex: 1,000 records in batch sizes of 100)');
   }
 
-  const numBatches = numRecords / pace;
+  const numBatches = numRecords / batchSize;
   const copyOfNumRecords = numRecords;
 
   try {
@@ -23,18 +23,18 @@ const seedNoSqlData = async (numRecords, pace, startingId) => {
   let currentBatch = 1;
 
   while (numRecords > 0) {
-    const data = generateData(pace, startingId, 'nosql');
+    const data = generateData(batchSize, startingId, 'nosql');
 
     await pf.bulk({ docs: data })
     .then((res) => {
-      console.log(`Batch number ${currentBatch} / ${numBatches} successfully seeded for IDs ${startingId} through ${(startingId + pace) - 1}`);
+      console.log(`Batch number ${currentBatch} / ${numBatches} successfully seeded for IDs ${startingId} through ${(startingId + batchSize) - 1}`);
     })
     .catch((err) => {
-      throw new Error(`Error seeding database on batch number ${currentBatch} / ${numBatches} for IDs ${startingId} through ${(startingId + pace) - 1}`);
+      throw new Error(`Error seeding database on batch number ${currentBatch} / ${numBatches} for IDs ${startingId} through ${(startingId + batchSize) - 1}`);
     });
 
-    numRecords -= pace;
-    startingId += pace;
+    numRecords -= batchSize;
+    startingId += batchSize;
     currentBatch++;
   }
 

@@ -92,6 +92,51 @@ const generateNoSqlData = (batchSize, startingId) => {
 const generateSqlData = (batchSize, startingId) => {
   const data = [];
 
+  while (batchSize > 0) {
+    const productFeaturesDataObject = {
+      featuresList: [],
+      contentGridFeatureItems: [],
+    };
+
+    let numFeatureListItems = 7;
+    let numContentGridItems = 5;
+
+    productFeaturesDataObject.feature = {
+      id_decid: startingId,
+      feature_banner_header: `'${fakeHeader()}'`,
+      feature_banner_text_1: `'${fakeDescription()}'`,
+      feature_banner_text_2: `'${fakeDescription()}'`,
+      feature_setup_header: `'${fakeHeader()}'`,
+      feature_setup_description_1: `'1. ${fakeSentence()}'`,
+      feature_setup_description_2: `'2. ${fakeSentence()}'`,
+      feature_setup_description_3: `'3. ${fakeSentence()}'`,
+      additional_features_header: `'${fakeHeader()}'`,
+      additional_features_description: `'${fakeDescription()}'`,
+    };
+
+    while (numFeatureListItems > 0) {
+      productFeaturesDataObject.featuresList.push({
+        header: `'${fakeHeader()}'`,
+        description: `'${fakeDescription()}'`,
+        feature_id_decid: startingId,
+      });
+      numFeatureListItems--;
+    }
+
+    while (numContentGridItems > 0) {
+      productFeaturesDataObject.contentGridFeatureItems.push({
+        title: `'${fakeTitle()}'`,
+        description: `'${fakeDescription()}'`,
+        feature_id_decid: startingId,
+      });
+      numContentGridItems--;
+    }
+
+    data.push(productFeaturesDataObject);
+    startingId++;
+    batchSize--;
+  }
+
   return data;
 }
 
