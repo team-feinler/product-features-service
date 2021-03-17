@@ -34,7 +34,6 @@ const seedSqlData = async (numRecords, batchSize, startingId) => {
 
     for (let i = 0; i < featuresList.length; i++) {
       const featuresListQuery = generateInsertQuery('features_list', featuresList[i]);
-      console.log(featuresListQuery);
 
       await client.query(featuresListQuery, (err) => {
         if (err) {
@@ -45,7 +44,6 @@ const seedSqlData = async (numRecords, batchSize, startingId) => {
 
     for (let i = 0; i < contentGridFeatureItems.length; i++) {
       const contentGridQuery = generateInsertQuery('content_grid_feature_items', contentGridFeatureItems[i]);
-      console.log(contentGridQuery);
 
       await client.query(contentGridQuery, (err) => {
         if (err) {
