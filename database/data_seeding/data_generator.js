@@ -89,6 +89,34 @@ const generateNoSqlData = (batchSize, startingId) => {
   return data;
 }
 
+const generateFeaturesTableRow = () => {
+  const bannerHeader = fakeHeader();
+  const bannerText1 = fakeDescription();
+  const bannerText2 = fakeDescription();
+  const setupHeader = fakeHeader();
+  const setupDescription1 = fakeSentence();
+  const setupDescription2 = fakeSentence();
+  const setupDescription3 = fakeSentence();
+  const additionalFeaturesHeader = fakeHeader();
+  const additionalFeaturesDescription = fakeDescription();
+
+  return`${bannerHeader},${bannerText1},${bannerText2},${setupHeader},1. ${setupDescription1},2. ${setupDescription2},3. ${setupDescription3},${additionalFeaturesHeader},${additionalFeaturesDescription}\n`;
+}
+
+const generateFeaturesListTableRow = (featureIdDecid) => {
+  const header = fakeHeader();
+  const description = fakeDescription();
+
+  return `${header},${description},${featureIdDecid}\n`;
+}
+
+const generateContentGridRow = (featureIdDecid) => {
+  const title = fakeTitle();
+  const description = fakeDescription();
+
+  return `${title},${description},${featureIdDecid}\n`;
+}
+
 const generateSqlData = (batchSize, startingId) => {
   const data = [];
 
@@ -102,7 +130,6 @@ const generateSqlData = (batchSize, startingId) => {
     let numContentGridItems = 5;
 
     productFeaturesDataObject.feature = {
-      id_decid: startingId,
       feature_banner_header: `'${fakeHeader()}'`,
       feature_banner_text_1: `'${fakeDescription()}'`,
       feature_banner_text_2: `'${fakeDescription()}'`,
@@ -153,3 +180,6 @@ const generateData = (batchSize, startingId, dataType) => {
 }
 
 module.exports.generateData = generateData;
+module.exports.generateFeaturesTableRow = generateFeaturesTableRow;
+module.exports.generateFeaturesListTableRow = generateFeaturesListTableRow;
+module.exports.generateContentGridRow = generateContentGridRow;

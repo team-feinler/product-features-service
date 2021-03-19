@@ -7,11 +7,15 @@ const lines = 2000000;
 const fileName = 'test.csv';
 const stream = fs.createWriteStream(fileName);
 
+const { generateFeaturesTableRow } = require('./database/data_seeding/data_generator.js');
+const { generateCopyQuery } = require('./database/data_seeding/query_generator.js');
+
+
 const pool = new Pool({
   user: 'tylerbrown',
   password: '',
   host: 'localhost',
-  database: 'test',
+  database: 'product_features',
   port: 5432,
 });
 
@@ -32,11 +36,11 @@ const startWriting = (writeStream, encoding, done) => {
 
     do {
       i--;
-      let user = createUser();
+      let data = generateFeaturesTableRow();
       if (i === 0) {
-        writeStream.write(user, encoding, done);
+        writeStream.write(data, encoding, done);
       } else {
-        writeStream.write(user, encoding);
+        writeStream.write(data, encoding);
       }
     } while (i > 0 && canWrite);
 
@@ -47,9 +51,20 @@ const startWriting = (writeStream, encoding, done) => {
   writing();
 }
 
-stream.write(`firstName,lastName,age,likesHiking\n`);
-
 const copyToDb = async (filePath) => {
+  const columns = [
+    'feature_banner_header',
+    'feature_banner_text_1',
+    'feature_banner_text_2',
+    'feature_setup_header',
+    'feature_setup_description_1',
+    'feature_setup_description_2',
+    'feature_setup_description_3',
+    'additional_features_header',
+    'additional_features_description',
+  ];
+  stream.write(`${columns.join(',')}\n`);
+
   try {
     await startWriting(stream, 'utf-8', () => {
       stream.end();
@@ -58,8 +73,9 @@ const copyToDb = async (filePath) => {
     console.log(err);
   }
 
-  pool.connect(function (err, client, done) {
-    const queryStream = client.query(copyFrom('COPY users (first_name, last_name, age, likes_hiking) FROM STDIN CSV HEADER'));
+  pool.connect((err, client, done) => {
+    const query = generateCopyQuery('features', columns);
+    const queryStream = client.query(copyFrom(query));
     const fileStream = fs.createReadStream(filePath);
 
     fileStream.on('error', done);

@@ -11,6 +11,7 @@ __snapshots__
 nosql_database.config.js
 sql_database.config.js
 api.tests.test.js
+seeding.csv
 
 #keyfile
 *.pem

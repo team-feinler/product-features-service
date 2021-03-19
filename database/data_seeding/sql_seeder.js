@@ -1,11 +1,15 @@
+const faker = require('faker');
+const fs = require('fs');
+const util = require('util');
+const { Pool } = require('pg');
+const copyFrom  = require('pg-copy-streams').from;
+
 const { userName, password } = require('../../database_configs/sql_database.config.js');
-const { Client } = require('pg');
+const { generateFeaturesTableRow, generateFeaturesListTableRow, generateContentGridTableRow } = require('./data_generator.js');
+const { generateCopyQuery } = require('./query_generator.js');
+const outputFile = `${__dirname}/seeding.csv`;
 
-const { generateData } = require('./data_generator.js');
-const { generateInsertQuery } = require('./query_generator.js');
-
-
-const client =  new Client({
+const pool =  new Pool({
   user: userName,
   password: password,
   host: 'localhost',
@@ -13,48 +17,97 @@ const client =  new Client({
   port: 5432,
 });
 
-const seedSqlData = async (numRecords, batchSize, startingId) => {
+const writeToCsv = async (lines, encoding, headers, createData) => {
+  return new Promise((resolve, reject) => {
+    const writeStream = fs.createWriteStream(outputFile);
+    writeStream.write(headers, encoding);
+
+    const done = () => {
+      writeStream.end()
+    }
+
+    const writing = () => {
+      let canWrite = true;
+
+      do {
+        lines--;
+        let row = createData();
+        if (lines === 0) {
+          writeStream.write(row, encoding, done);
+        } else {
+          writeStream.write(row, encoding);
+        }
+      } while (lines > 0 && canWrite);
+
+      if (lines > 0 && !canWrite) {
+        writeStream.once('drain', writing);
+      }
+    }
+    writing();
+
+    writeStream.on('finish', () => { resolve(true); });
+    writeStream.on('error', (err) => { reject(err); });
+  });
+}
+
+const copyToDb = (table, columns, filePath) => {
+  return new Promise((resolve, reject) => {
+    const query = generateCopyQuery(table, columns, filePath);
+
+    pool.connect((err, client, done) => {
+      const dataStream = client.query(copyFrom(query));
+      const fileStream = fs.createReadStream(filePath);
+
+      fileStream.on('error', (err) => { reject(err); });
+      dataStream.on('error', (err) => { reject(err); });
+      dataStream.on('finish', () => { resolve(true); });
+      fileStream.pipe(dataStream);
+    });
+  });
+}
+
+const seedSqlData = async (numRecords, batchSize, filePath) => {
 
   if ((numRecords / batchSize) - Math.floor(numRecords / batchSize) !== 0) {
     throw new Error('Number of records must be divisible by batch size (ex: 1,000 records in batch sizes of 100)');
   }
 
-  client.connect();
+  let numFeaturesTableRecords = numRecords;
+  let numFeaturesListTableRecords = numRecords * 7;
+  let numContentGrieTableRecords = numRecords * 5;
 
-  let data = generateData(batchSize, startingId, 'sql');
-  data.map(async (item) => {
-    const { feature, featuresList, contentGridFeatureItems } = item;
-    const featuresQuery = generateInsertQuery('features', feature);
+  //seed features table
+  const featuresColumns = [
+    'feature_banner_header',
+    'feature_banner_text_1',
+    'feature_banner_text_2',
+    'feature_setup_header',
+    'feature_setup_description_1',
+    'feature_setup_description_2',
+    'feature_setup_description_3',
+    'additional_features_header',
+    'additional_features_description',
+  ];
+  const csvHeaders = `${featuresColumns.join(',')}\n`;
 
-    await client.query(featuresQuery, (err) => {
-      if (err) {
-        console.log(err);
-      }
-    });
+  while (numFeaturesTableRecords > 0) {
 
-    for (let i = 0; i < featuresList.length; i++) {
-      const featuresListQuery = generateInsertQuery('features_list', featuresList[i]);
-
-      await client.query(featuresListQuery, (err) => {
-        if (err) {
-          console.log(err);
-        }
-      });
+    try {
+      await writeToCsv(batchSize, 'utf-8', csvHeaders, generateFeaturesTableRow);
+      await copyToDb('features', featuresColumns, filePath);
+    } catch (err) {
+      console.log(err);
     }
 
-    for (let i = 0; i < contentGridFeatureItems.length; i++) {
-      const contentGridQuery = generateInsertQuery('content_grid_feature_items', contentGridFeatureItems[i]);
+    numFeaturesTableRecords -= batchSize;
+  }
 
-      await client.query(contentGridQuery, (err) => {
-        if (err) {
-          console.log(err);
-        }
-      });
-    }
-  });
+  console.log(`${numRecords} feature records successfully seeded`);
 
-  console.log(`SQL data seeded for all ${batchSize} items`);
-  data = [];
+  //seed features list table
+
+  //seed content grid table
 }
 
-seedSqlData(2000, 2000, 1);
+//calling seeding function at end of file
+seedSqlData(25, 5, outputFile);

@@ -1,0 +1,148 @@
+//dependencies
+const faker = require('faker');
+const fs = require('fs');
+const util = require('util');
+const { Pool } = require('pg');
+const copyFrom  = require('pg-copy-streams').from;
+
+//config credentials and helper functions
+const { userName, password } = require('../../database_configs/sql_database.config.js');
+const { generateFeaturesTableRow, generateFeaturesListTableRow, generateContentGridTableRow } = require('./data_generator.js');
+const { generateCopyQuery } = require('./query_generator.js');
+
+//promisifying fs methods
+const createWriteStream = util.promisify(fs.createWriteStream);
+const unlink = util.promisify(fs.unlink);
+const writeFile = util.promisify(fs.writeFile);
+const createReadStream = util.promisify(fs.createReadStream);
+
+//creating write stream
+let stream;
+const initializeStream = async () => {
+
+  try {
+    stream = await createWriteStream(`${__dirname}/seeding.csv`);
+  } catch (err) {
+    throw new Error('Error creating write stream: ', err);
+  }
+}
+initializeStream();
+
+//set up pool
+const pool =  new Pool({
+  user: userName,
+  password: password,
+  host: 'localhost',
+  database: 'product_features',
+  port: 5432,
+});
+
+//helper functions that live in this file
+const deleteCsvFile = async (filePath) => {
+  try {
+    await unlink(filePath);
+  } catch (err) {
+    throw new Error('Error deleting file for fresh write: ', err);
+  }
+  console.log('File deleted for fresh re-write');
+}
+
+const writeCsvHeaders = async (filePath, text) => {
+  try {
+    await writeFile(filePath, text);
+  } catch (err) {
+    throw new Error('Error writing CSV headers: ', err);
+  }
+  console.log('CSV headers written');
+}
+
+//function to write data to CSV
+const writeToCsv = async (writeStream, lines, encoding, createData, done) => {
+
+  const writing = () => {
+    let canWrite = true;
+
+    do {
+      lines--;
+      let row = createData();
+      if (lines === 0) {
+        writeStream.write(row, encoding, done);
+      } else {
+        writeStream.write(row, encoding);
+      }
+    } while (lines > 0 && canWrite);
+
+    if (lines > 0 && !canWrite) {
+      writeStream.once('drain', writing);
+    }
+  }
+  writing();
+}
+
+//function to copy CSV to DB
+const copyToDb = (table, columns, filePath) => {
+  const query = generateCopyQuery(table, columns, filePath);
+
+  pool.connect(async (err, client, done) => {
+    const dataStream = client.query(copyFrom(query));
+    let fileStream;
+    try {
+      fileStream = await createReadStream(filePath);
+    } catch (err) {
+      throw new Error('Error creating read stream: ', err);
+    }
+
+    fileStream.on('error', done);
+    dataStream.on('error', done);
+    dataStream.on('finish', done);
+    fileStream.pipe(dataStream);
+  });
+}
+
+//seeder function putting it all together
+const seedSqlData = async (numRecords, batchSize, filePath) => {
+
+  if ((numRecords / batchSize) - Math.floor(numRecords / batchSize) !== 0) {
+    throw new Error('Number of records must be divisible by batch size (ex: 1,000 records in batch sizes of 100)');
+  }
+
+  let numFeaturesTableRecords = numRecords;
+  let numFeaturesListTableRecords = numRecords * 7;
+  let numContentGrieTableRecords = numRecords * 5;
+
+  //seed features table
+  const featuresColumns = [
+    'feature_banner_header',
+    'feature_banner_text_1',
+    'feature_banner_text_2',
+    'feature_setup_header',
+    'feature_setup_description_1',
+    'feature_setup_description_2',
+    'feature_setup_description_3',
+    'additional_features_header',
+    'additional_features_description',
+  ];
+
+  while (numFeaturesTableRecords > 0) {
+
+    try {
+      await deleteCsvFile(filePath);
+      await writeCsvHeaders(filePath, `${featuresColumns.join(',')}\n`);
+      await writeToCsv(stream, batchSize, 'utf-8', generateFeaturesTableRow, () => { stream.end() });
+      await copyToDb('features', featuresColumns, filePath);
+    } catch (err) {
+      console.log(err);
+    }
+
+    numFeaturesTableRecords -= batchSize;
+  }
+
+  console.log(`${numRecords} feature records successfully seeded`);
+
+  //seed features list table
+
+  //seed content grid table
+}
+
+//calling seeding function at end of file
+seedSqlData(10, 5, `${__dirname}/seeding.csv`);

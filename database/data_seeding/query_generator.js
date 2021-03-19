@@ -6,3 +6,11 @@ module.exports.generateInsertQuery = (table, data) => {
 
   return query;
 }
+
+module.exports.generateCopyQuery = (table, columnNames, fileOutput) => {
+  const columns = columnNames.join(', ');
+
+  const query = `COPY ${table} (${columns}) FROM STDIN CSV HEADER`;
+
+  return query;
+}

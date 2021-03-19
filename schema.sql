@@ -8,7 +8,7 @@ CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 
 CREATE TABLE features (
   id_encid uuid DEFAULT uuid_generate_v4() PRIMARY KEY,
-  id_decid INT NOT NULL UNIQUE,
+  id_decid SERIAL NOT NULL UNIQUE,
   feature_banner_header TEXT NOT NULL,
   feature_banner_text_1 TEXT NOT NULL,
   feature_banner_text_2 TEXT NOT NULL,
