@@ -109,5 +109,4 @@ const seedSqlData = async (numRecords, batchSize, filePath) => {
   //seed content grid table
 }
 
-//calling seeding function at end of file
 seedSqlData(25, 5, outputFile);
