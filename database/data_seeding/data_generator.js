@@ -1,5 +1,4 @@
 const faker = require('faker');
-const md5 = require('md5');
 
 const fakeHeader = () => faker.lorem.sentence().slice(0, -1);
 const fakeSentence = () => faker.lorem.sentence();
@@ -13,7 +12,6 @@ const generateNoSqlData = (batchSize, startingId) => {
 
     const generatedRecord = {
       productIdDecid: startingId,
-      productIdEncid: md5(startingId),
       banner: {
         header: fakeHeader(),
         text: [ fakeDescription(), fakeDescription() ],
@@ -117,64 +115,34 @@ const generateContentGridRow = (featureIdDecid) => {
   return `${title},${description},${featureIdDecid}\n`;
 }
 
-const generateSqlData = (batchSize, startingId) => {
+const generateSqlData = (batchSize, startingId, table) => {
   const data = [];
 
-  while (batchSize > 0) {
-    const productFeaturesDataObject = {
-      featuresList: [],
-      contentGridFeatureItems: [],
-    };
+  if (table === 'features') {
 
-    let numFeatureListItems = 7;
-    let numContentGridItems = 5;
-
-    productFeaturesDataObject.feature = {
-      feature_banner_header: `'${fakeHeader()}'`,
-      feature_banner_text_1: `'${fakeDescription()}'`,
-      feature_banner_text_2: `'${fakeDescription()}'`,
-      feature_setup_header: `'${fakeHeader()}'`,
-      feature_setup_description_1: `'1. ${fakeSentence()}'`,
-      feature_setup_description_2: `'2. ${fakeSentence()}'`,
-      feature_setup_description_3: `'3. ${fakeSentence()}'`,
-      additional_features_header: `'${fakeHeader()}'`,
-      additional_features_description: `'${fakeDescription()}'`,
-    };
-
-    while (numFeatureListItems > 0) {
-      productFeaturesDataObject.featuresList.push({
-        header: `'${fakeHeader()}'`,
-        description: `'${fakeDescription()}'`,
-        feature_id_decid: startingId,
-      });
-      numFeatureListItems--;
+    while (batchSize > 0) {
+      const dataString = `'${fakeHeader()}', '${fakeDescription()}', '${fakeDescription()}', '${fakeHeader()}', '1. ${fakeSentence()}', '2. ${fakeSentence()}', '3. ${fakeSentence()}', '${fakeHeader()}', '${fakeDescription()}'`;
+      data.push(`(${dataString})`);
+      batchSize--;
     }
 
-    while (numContentGridItems > 0) {
-      productFeaturesDataObject.contentGridFeatureItems.push({
-        title: `'${fakeTitle()}'`,
-        description: `'${fakeDescription()}'`,
-        feature_id_decid: startingId,
-      });
-      numContentGridItems--;
-    }
-
-    data.push(productFeaturesDataObject);
-    startingId++;
-    batchSize--;
+  } else if (table === 'featuresList') {
+    // code
+  } else if (table === 'contentGrid') {
+    // code
   }
 
   return data;
 }
 
-const generateData = (batchSize, startingId, dataType) => {
+const generateData = (batchSize, startingId, dataType, table) => {
   if (batchSize === undefined || startingId === undefined || dataType === undefined) {
     throw new Error('Must pass in a batchSize, startingId and dataType in order to generate data');
   }
 
   let data;
 
-  dataType === 'nosql' ? data = generateNoSqlData(batchSize, startingId) : data = generateSqlData(batchSize, startingId);
+  dataType === 'nosql' ? data = generateNoSqlData(batchSize, startingId) : data = generateSqlData(batchSize, startingId, table);
 
   return data;
 }
