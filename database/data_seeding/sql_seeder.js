@@ -1,11 +1,14 @@
+const faker = require('faker');
+const fs = require('fs');
+const { Pool } = require('pg');
+const copyFrom  = require('pg-copy-streams').from;
+
 const { userName, password } = require('../../database_configs/sql_database.config.js');
-const { Client } = require('pg');
+const { generateFeaturesTableRow, generateFeaturesListTableRow, generateContentGridRow } = require('./data_generator.js');
+const { generateCopyQuery, addPrimaryKey, addForeignKey, addUniqueConstraint } = require('./query_generator.js');
+const outputFile = `${__dirname}/seeding.csv`;
 
-const { generateData } = require('./data_generator.js');
-const { generateInsertQuery } = require('./query_generator.js');
-
-
-const client =  new Client({
+const pool =  new Pool({
   user: userName,
   password: password,
   host: 'localhost',
@@ -13,50 +16,191 @@ const client =  new Client({
   port: 5432,
 });
 
-const seedSqlData = async (numRecords, batchSize, startingId) => {
+const writeToCsv = async (lines, encoding, headers, createData, startingId, counter = null) => {
+  return new Promise((resolve, reject) => {
+    const writeStream = fs.createWriteStream(outputFile);
+    writeStream.write(headers, encoding);
+
+    const done = () => {
+      writeStream.end()
+    }
+
+    let copyOfCounter = counter;
+    copyOfCounter ? copyOfCounter++ : null;
+
+    const writing = () => {
+      let canWrite = true;
+
+      do {
+        lines--;
+
+        if (copyOfCounter === 1) {
+          copyOfCounter = counter;
+          startingId++;
+        } else if (counter !== null) {
+          copyOfCounter--;
+        }
+
+        let row = createData(startingId);
+        if (lines === 0) {
+          writeStream.write(row, encoding, done);
+        } else {
+          writeStream.write(row, encoding);
+        }
+      } while (lines > 0 && canWrite);
+
+      if (lines > 0 && !canWrite) {
+        writeStream.once('drain', writing);
+      }
+    }
+    writing();
+
+    writeStream.on('finish', () => { resolve(true); });
+    writeStream.on('error', (err) => { reject(err); });
+  });
+}
+
+const copyToDb = (table, columns, filePath, client) => {
+  return new Promise((resolve, reject) => {
+    const query = generateCopyQuery(table, columns);
+
+    const dataStream = client.query(copyFrom(query));
+    const fileStream = fs.createReadStream(filePath);
+
+    fileStream.on('error', (err) => { reject(err); });
+    dataStream.on('error', (err) => { reject(err); });
+    dataStream.on('finish', () => { resolve(true); });
+    fileStream.pipe(dataStream);
+  });
+}
+
+const seedSqlData = (numRecords, batchSize, filePath) => {
 
   if ((numRecords / batchSize) - Math.floor(numRecords / batchSize) !== 0) {
     throw new Error('Number of records must be divisible by batch size (ex: 1,000 records in batch sizes of 100)');
   }
 
-  client.connect();
+  let numFeaturesTableRecords = numRecords;
+  let numFeaturesListTableRecords = numRecords * 7;
+  let numContentGridTableRecords = numRecords * 5;
 
-  let data = generateData(batchSize, startingId, 'sql');
-  data.map(async (item) => {
-    const { feature, featuresList, contentGridFeatureItems } = item;
-    const featuresQuery = generateInsertQuery('features', feature);
+  let featuresBatchSize = batchSize;
+  let featuresListBatchSize = batchSize * 7;
+  let contentGridBatchSize = batchSize * 5;
 
-    await client.query(featuresQuery, (err) => {
-      if (err) {
-        console.log(err);
+  const featuresColumns = [
+    'feature_banner_header',
+    'feature_banner_text_1',
+    'feature_banner_text_2',
+    'feature_setup_header',
+    'feature_setup_description_1',
+    'feature_setup_description_2',
+    'feature_setup_description_3',
+    'additional_features_header',
+    'additional_features_description',
+  ];
+  const featuresListColumns = [
+    'header',
+    'description',
+    'feature_id_decid',
+  ];
+  const contentGridColumns = [
+    'title',
+    'description',
+    'feature_id_decid',
+  ];
+
+  const featuresCsvHeaders = `${featuresColumns.join(',')}\n`;
+  const featuresListCsvHeaders = `${featuresListColumns.join(',')}\n`;
+  const contentGridCsvHeaders = `${contentGridColumns.join(',')}\n`;
+
+  pool.connect(async (err, client, done) => {
+
+    // seed features table
+    while (numFeaturesTableRecords > 0) {
+
+      try {
+        await writeToCsv(featuresBatchSize, 'utf-8', featuresCsvHeaders, generateFeaturesTableRow);
+        await copyToDb('features', featuresColumns, filePath, client);
+      } catch (err) {
+        throw new Error(err);
       }
-    });
 
-    for (let i = 0; i < featuresList.length; i++) {
-      const featuresListQuery = generateInsertQuery('features_list', featuresList[i]);
-      console.log(featuresListQuery);
-
-      await client.query(featuresListQuery, (err) => {
-        if (err) {
-          console.log(err);
-        }
-      });
+      numFeaturesTableRecords -= featuresBatchSize;
+      numFeaturesTableRecords % 1000000 === 0 ? console.log(`${numFeaturesTableRecords} feature table records left to seed`) : null;
     }
 
-    for (let i = 0; i < contentGridFeatureItems.length; i++) {
-      const contentGridQuery = generateInsertQuery('content_grid_feature_items', contentGridFeatureItems[i]);
-      console.log(contentGridQuery);
+    console.log(`${numRecords} feature table records successfully seeded`);
 
-      await client.query(contentGridQuery, (err) => {
-        if (err) {
-          console.log(err);
-        }
-      });
+    const featuresPkQuery = addPrimaryKey('features', 'id_encid');
+    const uniqueConstraintQuery = addUniqueConstraint('features', 'features_unique_constraint', 'id_decid');
+    try {
+      await client.query(featuresPkQuery);
+      await client.query()
+    } catch (err) {
+      throw new Error(err);
     }
+    console.log('Primary key and unique constraint added for features table');
+
+    // seed features list table
+    let featuresListStartingId = 1;
+    while (numFeaturesListTableRecords > 0) {
+      const numPerFeature = 7;
+
+      try {
+        await writeToCsv(featuresListBatchSize, 'utf-8', featuresListCsvHeaders, generateFeaturesListTableRow, featuresListStartingId, numPerFeature);
+        await copyToDb('features_list', featuresListColumns, filePath, client);
+      } catch (err) {
+        throw new Error(err);
+      }
+
+      featuresListStartingId += (featuresListBatchSize / numPerFeature);
+      numFeaturesListTableRecords -= featuresListBatchSize;
+      numFeaturesListTableRecords % 1000000 === 0 ? console.log(`${numFeaturesListTableRecords} feature_list table records left to seed`) : null;
+    }
+
+    console.log(`${numRecords * 7} feature_list table records successfully seeded`);
+
+    const featuresListPkQuery = addPrimaryKey('features_list', 'id_encid');
+    const featuresListFkQuery = addForeignKey('features_list', 'feature_id_decid', 'features', 'id_decid');
+    try {
+      await client.query(featuresListPkQuery);
+      await client.query(featuresListFkQuery);
+    } catch (err) {
+      throw new Error(err);
+    }
+    console.log('Primary key and foreign keys added for features_list table');
+
+    //seed content grid table
+    let contentGridListStartingId = 1;
+    while (numContentGridTableRecords > 0) {
+      const numPerFeature = 5;
+
+      try {
+        await writeToCsv(contentGridBatchSize, 'utf-8', contentGridCsvHeaders, generateContentGridRow, contentGridListStartingId, numPerFeature);
+        await copyToDb('content_grid_feature_items', contentGridColumns, filePath, client);
+      } catch (err) {
+        throw new Error(err);
+      }
+
+      contentGridListStartingId += (contentGridBatchSize / numPerFeature);
+      numContentGridTableRecords -= contentGridBatchSize;
+      numContentGridTableRecords % 1000000 === 0 ? console.log(`${numContentGridTableRecords} content_grid table records left to seed`) : null;
+    }
+
+    console.log(`${numRecords * 5} content_grid table records successfully seeded`);
+
+    const contentGridPkQuery = addPrimaryKey('content_grid_feature_items', 'id_encid');
+    const contentGridFkQuery = addForeignKey('content_grid_feature_items', 'feature_id_decid', 'features', 'id_decid');
+    try {
+      await client.query(contentGridPkQuery);
+      await client.query(contentGridFkQuery);
+    } catch (err) {
+      throw new Error(err);
+    }
+    console.log('Primary key and foreign keys added for content_grid table');
   });
-
-  console.log(`SQL data seeded for all ${batchSize} items`);
-  data = [];
+  console.log('SQL data seeded successfully');
 }
 
-seedSqlData(2000, 2000, 1);
+seedSqlData(10000000, 100000, outputFile);
