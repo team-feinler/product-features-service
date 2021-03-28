@@ -11,7 +11,7 @@ const seedNoSqlData = async (numRecords, batchSize, startingId) => {
   const copyOfNumRecords = numRecords;
 
   try {
-    // await nano.db.destroy('product_features');
+    await nano.db.destroy('product_features');
     await nano.db.create('product_features');
   } catch (err) {
     throw new Error(err);

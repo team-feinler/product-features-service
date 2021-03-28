@@ -5,7 +5,7 @@ const copyFrom  = require('pg-copy-streams').from;
 
 const { userName, password } = require('../../database_configs/sql_database.config.js');
 const { generateFeaturesTableRow, generateFeaturesListTableRow, generateContentGridRow } = require('./data_generator.js');
-const { generateCopyQuery, addPrimaryKey, addForeignKey, addUniqueConstraint } = require('./query_generator.js');
+const { generateCopyQuery, addPrimaryKey, addForeignKey, addUniqueConstraint, createIndex } = require('./query_generator.js');
 const outputFile = `${__dirname}/seeding.csv`;
 
 const pool =  new Pool({
@@ -102,12 +102,12 @@ const seedSqlData = (numRecords, batchSize, filePath) => {
   const featuresListColumns = [
     'header',
     'description',
-    'feature_id_decid',
+    'product_id',
   ];
   const contentGridColumns = [
     'title',
     'description',
-    'feature_id_decid',
+    'product_id',
   ];
 
   const featuresCsvHeaders = `${featuresColumns.join(',')}\n`;
@@ -133,10 +133,10 @@ const seedSqlData = (numRecords, batchSize, filePath) => {
     console.log(`${numRecords} feature table records successfully seeded`);
 
     const featuresPkQuery = addPrimaryKey('features', 'id_encid');
-    const uniqueConstraintQuery = addUniqueConstraint('features', 'features_unique_constraint', 'id_decid');
+    const uniqueConstraintQuery = addUniqueConstraint('features', 'features_unique_constraint', 'product_id');
     try {
       await client.query(featuresPkQuery);
-      await client.query()
+      await client.query(uniqueConstraintQuery);
     } catch (err) {
       throw new Error(err);
     }
@@ -156,20 +156,20 @@ const seedSqlData = (numRecords, batchSize, filePath) => {
 
       featuresListStartingId += (featuresListBatchSize / numPerFeature);
       numFeaturesListTableRecords -= featuresListBatchSize;
-      numFeaturesListTableRecords % 1000000 === 0 ? console.log(`${numFeaturesListTableRecords} feature_list table records left to seed`) : null;
+      numFeaturesListTableRecords % 7000000 === 0 ? console.log(`${numFeaturesListTableRecords} feature_lists table records left to seed`) : null;
     }
 
     console.log(`${numRecords * 7} feature_list table records successfully seeded`);
 
     const featuresListPkQuery = addPrimaryKey('features_list', 'id_encid');
-    const featuresListFkQuery = addForeignKey('features_list', 'feature_id_decid', 'features', 'id_decid');
+    const featuresListFkQuery = addForeignKey('features_list', 'product_id', 'features', 'product_id');
     try {
       await client.query(featuresListPkQuery);
       await client.query(featuresListFkQuery);
     } catch (err) {
       throw new Error(err);
     }
-    console.log('Primary key and foreign keys added for features_list table');
+    console.log('Primary key and foreign key added for features_list table');
 
     //seed content grid table
     let contentGridListStartingId = 1;
@@ -185,22 +185,33 @@ const seedSqlData = (numRecords, batchSize, filePath) => {
 
       contentGridListStartingId += (contentGridBatchSize / numPerFeature);
       numContentGridTableRecords -= contentGridBatchSize;
-      numContentGridTableRecords % 1000000 === 0 ? console.log(`${numContentGridTableRecords} content_grid table records left to seed`) : null;
+      numContentGridTableRecords % 5000000 === 0 ? console.log(`${numContentGridTableRecords} content_grid table records left to seed`) : null;
     }
 
     console.log(`${numRecords * 5} content_grid table records successfully seeded`);
 
     const contentGridPkQuery = addPrimaryKey('content_grid_feature_items', 'id_encid');
-    const contentGridFkQuery = addForeignKey('content_grid_feature_items', 'feature_id_decid', 'features', 'id_decid');
+    const contentGridFkQuery = addForeignKey('content_grid_feature_items', 'product_id', 'features', 'product_id');
     try {
       await client.query(contentGridPkQuery);
       await client.query(contentGridFkQuery);
     } catch (err) {
       throw new Error(err);
     }
-    console.log('Primary key and foreign keys added for content_grid table');
+    console.log('Primary key and foreign key added for content_grid table');
+
+    const featuresListIndexQuery = createIndex('features_list', 'fl_product_id', 'product_id');
+    const contentGridIndexQuery = createIndex('content_grid_feature_items', 'cg_product_id', 'product_id');
+    try {
+      await client.query(featuresListIndexQuery);
+      await client.query(contentGridIndexQuery);
+    } catch (err) {
+      throw new Error(err);
+    }
+    console.log('Indexes added for database optimization');
+
+    console.log('SQL data seeded successfully');
   });
-  console.log('SQL data seeded successfully');
 }
 
 seedSqlData(10000000, 100000, outputFile);
