@@ -4,7 +4,7 @@ const path = require('path');
 const cors = require('cors');
 const mongoose = require('mongoose');
 const db = require('../database/database.js');
-const { getFeatureDataForProductId } = require('../database/database_new.js');
+const { getFeature } = require('../database/database_new.js');
 
 app.use(cors());
 app.use(express.json());
@@ -32,7 +32,7 @@ app.get('/product-features/:id', async (req, res) => {
   const productId = req.params.id;
 
   // try {
-  //   const { rows } = await getFeatureDataForProductId(productId);
+  //   const { rows } = await getFeature(productId);
   //   console.log(rows);
   //   res.send(rows);
   // } catch (err) {
