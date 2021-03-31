@@ -2,66 +2,63 @@ const express = require('express');
 const app = express();
 const path = require('path');
 const cors = require('cors');
-const mongoose = require('mongoose');
-const db = require('../database/database.js');
-const { getFeature } = require('../database/database_new.js');
+
+const { formatData } = require('../database/data_seeding/data_generator.js');
+const {
+  addFeatureRecord,
+  getFeatureRecord,
+  updateFeatureRecord,
+  deleteFeatureRecord,
+} = require('../database/database.js');
 
 app.use(cors());
 app.use(express.json());
 app.use('/', express.static(path.join(__dirname + '/../public')));
 app.use('/:id', express.static(path.join(__dirname + '/../public')));
 
-const corsOptions = {
-  origin: 'http://localhost:3000',
-  optionsSuccessStatus: 200
-}
+// const corsOptions = {
+//   origin: 'http://localhost:3000',
+//   optionsSuccessStatus: 200
+// }
 
-app.post('/product-features', (req, res) => {
-  const { body: { record } } = req;
+app.post('/product-features', async (req, res) => {
+  const { body: { table, record } } = req;
 
-  db.insertRecord(record, (err, data) => {
-    if (err) {
-      res.status(500).send(err);
-    } else {
-      res.send(data);
-    }
-  });
+  try {
+    const response = await addFeatureRecord(table, record);
+    res.send(response);
+  } catch (err) {
+    res.status(500).send(err);
+  }
 });
 
 app.get('/product-features/:id', async (req, res) => {
-  const productId = req.params.id;
+  const { params: { id: productId } } = req;
 
-  // try {
-  //   const { rows } = await getFeature(productId);
-  //   console.log(rows);
-  //   res.send(rows);
-  // } catch (err) {
-  //   res.status(500).send(err);
-  // }
-
-  db.getRecord(productId, (err, data) => {
-    if (err) {
-      res.status(500).send(err);
-    } else {
-      res.send(data);
-    }
-  });
+  try {
+    const { rows } = await getFeatureRecord(productId);
+    const formattedData = formatData(rows);
+    res.send(formattedData);
+  } catch (err) {
+    console.log(err);
+    res.status(500).send(err);
+  }
 });
 
-app.put('/product-features', (req, res) => {
-  const { body: { productId, updates } } = req;
+app.put('/product-features/:id', async (req, res) => {
+  const { params: { id: productId } } = req;
+  const { body: { table, updates } } = req;
 
-  db.updateRecord(productId, updates, (err, data) => {
-    if (err) {
-      res.status(500).send(err);
-    } else {
-      res.send(data);
-    }
-  });
+  try {
+    const response = await updateFeatureRecord(table, productId, updates);
+    res.send(response);
+  } catch (err) {
+    res.status(500).send(err);
+  }
 });
 
-app.delete('/product-features', (req, res) => {
-  const { body: { productId } } = req;
+app.delete('/product-features/:id', (req, res) => {
+  const { body: { table } } = req;
 
   db.deleteRecord(productId, (err, data) => {
     if (err) {
