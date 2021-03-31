@@ -40,7 +40,6 @@ app.get('/product-features/:id', async (req, res) => {
     const formattedData = formatData(rows);
     res.send(formattedData);
   } catch (err) {
-    console.log(err);
     res.status(500).send(err);
   }
 });
@@ -57,16 +56,16 @@ app.put('/product-features/:id', async (req, res) => {
   }
 });
 
-app.delete('/product-features/:id', (req, res) => {
+app.delete('/product-features/:id', async (req, res) => {
+  const { params: { id: productId } } = req;
   const { body: { table } } = req;
 
-  db.deleteRecord(productId, (err, data) => {
-    if (err) {
-      res.status(500).send(err);
-    } else {
-      res.send(data);
-    }
-  })
+  try {
+    const response = await deleteFeatureRecord(table, productId);
+    res.send(response);
+  } catch (err) {
+    res.status(500).send(err);
+  }
 });
 
 module.exports = app;

@@ -80,18 +80,21 @@ module.exports.generateGetFeatureQuery = (productId) => {
 
 module.exports.generateUpdateFeatureQuery = (table, productId, dataObj) => {
   const keyValues = [];
-  for (let key of dataObj) {
+
+  for (let key in dataObj) {
     keyValues.push(`${key} = ${dataObj[key]}`);
   }
   const updates = keyValues.join(', ');
 
-  const query = `UPDATE ${table} SET ${updates} WHERE product_id = ${productId}`;
+  const query = `UPDATE ${table} SET ${updates} WHERE product_id = ${productId} RETURNING *;`;
+
+  console.log(query);
 
   return query;
 }
 
 module.exports.generateDeleteFeatureQuery = (table, productId) => {
-  const query = `DELETE FROM ${table} WHERE product_id = ${productId}`;
+  const query = `DELETE FROM ${table} WHERE product_id = ${productId} RETURNING product_id;`;
 
   return query;
 }

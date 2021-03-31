@@ -83,100 +83,93 @@ describe('API Endpoints', () => {
         if (err) {
           return done(err);
         } else {
-          const { body: [ {
-            feature_banner_header,
-            feature_banner_text_1,
-            feature_banner_text_2,
-            feature_setup_header,
-            feature_setup_description_1,
-            feature_setup_description_2,
-            feature_setup_description_3,
-            additional_features_header,
-            additional_features_description,
-            fl_header,
-            fl_description,
-            cg_title,
-            cg_description,
-          } ] } = res;
-          expect(feature_banner_header).toBeDefined();
-          expect(feature_banner_text_1).toBeDefined();
-          expect(feature_banner_text_2).toBeDefined();
-          expect(feature_setup_header).toBeDefined();
-          expect(feature_setup_description_1).toBeDefined();
-          expect(feature_setup_description_2).toBeDefined();
-          expect(feature_setup_description_3).toBeDefined();
-          expect(additional_features_header).toBeDefined();
-          expect(additional_features_description).toBeDefined();
-          expect(fl_header).toBeDefined();
-          expect(fl_description).toBeDefined();
-          expect(cg_title).toBeDefined();
-          expect(cg_description).toBeDefined();
+          const { body: {
+            productId,
+            banner,
+            features,
+            featureSetup,
+            additionalFeatures,
+          } } = res;
+          expect(productId).toBeDefined();
+          expect(banner).toBeDefined();
+          expect(features).toBeDefined();
+          expect(featureSetup).toBeDefined();
+          expect(additionalFeatures).toBeDefined();
           return done();
         }
       });
   });
 
   it('Should update a record in the db for a valid ID via a PUT request to /product-features', (done) => {
-    const record = fakeData.fakeDataRecord;
-
-    db.insertRecord(record, (err, res) => {
-      if (err) {
-        return done(err);
-      } else {
-        request(app)
-          .put('/product-features')
-          .send({ productId: record.productId, updates: { banner: { header: 'This is a new header', text: 'This is new text' }}})
-          .expect(200)
-          .end((err2, res2) => {
-            if (err2) {
-              return done(err2);
-            } else {
-              db.getRecord(record.productId, (err3, res3) => {
-                if (err3) {
-                  return done(err3);
-                } else {
-                  expect(res3[0].banner.header).toEqual('This is a new header');
-                  expect(res3[0].banner.text[0]).toEqual('This is new text');
-                  db.deleteRecord(record.productId, (err4, res4) => {
-                    if (err4) {
-                      return done(err4);
-                    } else {
-                      return done();
-                    }
-                  });
-                }
-              });
-            }
-          });
-      }
-    });
+    const updates = {
+      feature_setup_header: "'hello'",
+    };
+    request(app)
+      .put(`/product-features/${testingProductId}`)
+      .send({
+        table: 'features',
+        updates: updates,
+      })
+      .expect(200)
+      .end((err, res) => {
+        if (err) {
+          return done(err);
+        } else {
+          console.log(res.body);
+          const { body: { rows } } = res;
+          expect(rows[0].feature_setup_header).toEqual('hello');
+          return done();
+        }
+      });
   });
 
-  it('Should delete a record in the db for a valid ID via a DELETE request to /product-features', (done) => {
-    const record = fakeData.fakeDataRecord;
+  it('Should delete a records in the db for a valid ID via a DELETE request to /product-features', (done) => {
+    request(app)
+      .delete(`/product-features/${testingProductId}`)
+      .send({
+        table: 'features_list'
+      })
+      .expect(200)
+      .end((err, res) => {
+        if (err) {
+          return done(err);
+        } else {
+          const { body: { rows: [ { product_id } ] } } = res;
+          expect(product_id).toEqual(testingProductId);
+          return done();
+        }
+      });
 
-    db.insertRecord(record, (err, res) => {
-      if (err) {
-        return done(err);
-      } else {
+      request(app)
+        .delete(`/product-features/${testingProductId}`)
+        .send({
+          table: 'content_grid_feature_items'
+        })
+        .expect(200)
+        .end((err, res) => {
+          if (err) {
+            return done(err);
+          } else {
+            const { body: { rows: [ { product_id } ] } } = res;
+            expect(product_id).toEqual(testingProductId);
+            return done();
+          }
+        });
+
         request(app)
-          .delete('/product-features')
-          .send({ productId: record.productId })
+          .delete(`/product-features/${testingProductId}`)
+          .send({
+            table: 'features'
+          })
           .expect(200)
-          .end((err2, res2) => {
-            if (err2) {
-              return done(err2);
+          .end((err, res) => {
+            if (err) {
+              return done(err);
             } else {
-              db.getRecord(record.productId, (err3, res3) => {
-                if(err3) {
-                  return done();
-                } else {
-                  return done(new Error('Record deletion unsuccessful'));
-                }
-              });
+              const { body: { rows: [ { product_id } ] } } = res;
+              expect(product_id).toEqual(testingProductId);
+              return done();
             }
           });
-      }
-    });
   });
 });
