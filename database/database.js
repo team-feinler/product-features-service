@@ -1,94 +1,72 @@
-const mongoose = require('mongoose');
+const { Client } = require('pg');
+const { userName, password } = require('../database_configs/sql_database.config.js');
+const {
+  generateInsertFeatureQuery,
+  generateGetFeatureQuery,
+  generateUpdateFeatureQuery,
+  generateDeleteFeatureQuery,
+} = require('./data_seeding/query_generator.js');
 
-// open mongoose connection
-mongoose.connect('mongodb://localhost/fec_product_features', {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-  useFindAndModify: false,
-  useCreateIndex: true
-});
+const clientObj = {
+  user: userName,
+  password: password,
+  host: 'localhost',
+  database: 'product_features',
+  port: 5432,
+};
 
-mongoose.connection.on('error', console.error.bind(console, 'connection error:'));
+module.exports.addFeatureRecord = async (table, dataObj) => {
+  const client = new Client(clientObj);
+  const query = generateInsertFeatureQuery(table, dataObj);
 
-const productFeaturesSchema = new mongoose.Schema({
-  productId: {
-    type: Number,
-    unique: true
-  },
-  banner: {
-    header: String,
-    text: [{ type: String }]
-  },
-  features: [{
-    header: String,
-    description: String
-  }],
-  featureSetup: {
-    header: String,
-    description: [{ type: String }]
-  },
-  additionalFeatures: {
-    header: String,
-    description: String,
-    contentGrid: [{
-      title: String,
-      description: String
-    }]
-  }
-});
-
-const ProductFeatures = mongoose.model('ProductFeatures', productFeaturesSchema);
-
-const insertRecord = async (record, callback) => {
-  const { productId } = record;
-  const recordExists = await ProductFeatures.count({ productId: productId });
-
-  if (recordExists) {
-    callback(new Error('Record with that product ID already exists'), null);
-  } else {
-    ProductFeatures.create(record, (err, res) => {
-      if (err) {
-        callback(err, null);
-      } else {
-        callback(null, res);
-      }
-    });
+  try {
+    await client.connect();
+    const res = await client.query(query);
+    await client.end();
+    return res;
+  } catch (err) {
+    return err;
   }
 }
 
-const getRecord = (productId, callback) => {
-  ProductFeatures.find({ productId: productId })
-    .exec((err, data) => {
-      if (err || data[0] === undefined || !data[0].productId) {
-        callback(err, null);
-      } else {
-        callback(null, data);
-      }
-    });
+module.exports.getFeatureRecord = async (productId) => {
+  const client = new Client(clientObj);
+  const query = generateGetFeatureQuery(productId);
+
+  try {
+    await client.connect();
+    const res = await client.query(query);
+    await client.end();
+    return res;
+  } catch (err) {
+    return err;
+  }
 }
 
-const updateRecord = async (productId, updates, callback) => {
-  ProductFeatures.findOneAndUpdate({ productId: productId }, updates, (err, res) => {
-    if (err) {
-      callback(err, null);
-    } else {
-      callback(null, res);
-    }
-  });
+module.exports.updateFeatureRecord = async (table, productId, dataObj) => {
+  const client = new Client(clientObj);
+  const query = generateUpdateFeatureQuery(table, productId, dataObj);
+
+  try {
+    await client.connect();
+    const res = await client.query(query);
+    await client.end();
+    return res;
+  } catch (err) {
+    return err;
+  }
 }
 
-const deleteRecord = (productId, callback) => {
-  ProductFeatures.deleteOne({ productId: productId }, (err, res) => {
-    if (err) {
-      callback(err, null);
-    } else {
-      callback(null, res);
-    }
-  });
-}
+module.exports.deleteFeatureRecord = async (table, productId) => {
+  const client = new Client(clientObj);
+  const query = generateDeleteFeatureQuery(table, productId);
 
-module.exports = ProductFeatures;
-module.exports.insertRecord = insertRecord;
-module.exports.getRecord = getRecord;
-module.exports.updateRecord = updateRecord;
-module.exports.deleteRecord = deleteRecord;
+  try {
+    await client.connect();
+    const res = await client.query(query);
+    await client.end();
+    return res;
+  } catch (err) {
+    return err;
+  }
+}

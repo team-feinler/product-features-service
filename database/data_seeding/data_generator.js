@@ -87,7 +87,7 @@ const generateNoSqlData = (batchSize, startingId) => {
   return data;
 }
 
-const generateFeaturesTableRow = () => {
+module.exports.generateFeaturesTableRow = () => {
   const bannerHeader = fakeHeader();
   const bannerText1 = fakeDescription();
   const bannerText2 = fakeDescription();
@@ -101,14 +101,14 @@ const generateFeaturesTableRow = () => {
   return`${bannerHeader},${bannerText1},${bannerText2},${setupHeader},1. ${setupDescription1},2. ${setupDescription2},3. ${setupDescription3},${additionalFeaturesHeader},${additionalFeaturesDescription}\n`;
 }
 
-const generateFeaturesListTableRow = (featureIdDecid) => {
+module.exports.generateFeaturesListTableRow = (featureIdDecid) => {
   const header = fakeHeader();
   const description = fakeDescription();
 
   return `${header},${description},${featureIdDecid}\n`;
 }
 
-const generateContentGridRow = (featureIdDecid) => {
+module.exports.generateContentGridRow = (featureIdDecid) => {
   const title = fakeTitle();
   const description = fakeDescription();
 
@@ -135,7 +135,7 @@ const generateSqlData = (batchSize, startingId, table) => {
   return data;
 }
 
-const generateData = (batchSize, startingId, dataType, table) => {
+module.exports.generateData = (batchSize, startingId, dataType, table) => {
   if (batchSize === undefined || startingId === undefined || dataType === undefined) {
     throw new Error('Must pass in a batchSize, startingId and dataType in order to generate data');
   }
@@ -147,7 +147,66 @@ const generateData = (batchSize, startingId, dataType, table) => {
   return data;
 }
 
-module.exports.generateData = generateData;
-module.exports.generateFeaturesTableRow = generateFeaturesTableRow;
-module.exports.generateFeaturesListTableRow = generateFeaturesListTableRow;
-module.exports.generateContentGridRow = generateContentGridRow;
+module.exports.formatData = (data) => {
+  //extract shallow data points
+  const dataSample = data[0];
+  const {
+    product_id,
+    feature_banner_header,
+    feature_banner_text_1,
+    feature_banner_text_2,
+    feature_setup_header,
+    feature_setup_description_1,
+    feature_setup_description_2,
+    feature_setup_description_3,
+    additional_features_header,
+    additional_features_description,
+  } = dataSample;
+
+  //establish data collection variables
+  const featuresList = [];
+  const featuresListIds = [];
+  const contentGridItems = [];
+  const contentGridIds = [];
+
+  //collect unique feature list items and content grid items
+  data.map((row) => {
+    if (featuresListIds.indexOf(row.fl_id_encid) === -1) {
+      featuresList.push({
+        header: row.fl_header,
+        description: row.fl_description,
+      });
+      featuresListIds.push(row.fl_id_encid);
+    }
+
+    if (contentGridIds.indexOf(row.cg_id_encid) === -1) {
+      contentGridItems.push({
+        title: row.cg_title,
+        description: row.cg_description,
+      });
+      contentGridIds.push(row.cg_id_encid);
+    }
+
+  });
+
+  //put it all together
+  const formattedData = {
+    productId: product_id,
+    banner: {
+      header: feature_banner_header,
+      text: [ feature_banner_text_1, feature_banner_text_2 ],
+    },
+    features: featuresList,
+    featureSetup: {
+      header: feature_setup_header,
+      description: [ feature_setup_description_1, feature_setup_description_2, feature_setup_description_3 ],
+    },
+    additionalFeatures: {
+      header: additional_features_header,
+      description: additional_features_description,
+      contentGrid: contentGridItems,
+    }
+  }
+
+  return formattedData;
+}

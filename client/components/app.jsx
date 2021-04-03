@@ -66,9 +66,9 @@ class ProductFeatures extends Component {
       // this.getProductPhotos(productId)
     ])
     .then((res) => {
-      console.log(res[0].data);
+      console.log('RESPONSE', res[0].data);
       this.setState({
-        productFeatures: res[0].data,
+        productFeatures: [ res[0].data ],
         // productPhotos: res[1].data.featuresUrls
       })
     })
