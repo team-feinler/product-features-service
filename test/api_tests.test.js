@@ -115,7 +115,6 @@ describe('API Endpoints', () => {
         if (err) {
           return done(err);
         } else {
-          console.log(res.body);
           const { body: { rows } } = res;
           expect(rows[0].feature_setup_header).toEqual('hello');
           return done();

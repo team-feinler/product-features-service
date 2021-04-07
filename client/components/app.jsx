@@ -53,7 +53,7 @@ class ProductFeatures extends Component {
   }
 
   getProductFeatures(productId) {
-    return axios.get(`http://localhost:4000/product-features/${productId}`)
+    return axios.get(`/product-features/${productId}`)
   }
 
   // getProductPhotos(productId) {
@@ -66,7 +66,6 @@ class ProductFeatures extends Component {
       // this.getProductPhotos(productId)
     ])
     .then((res) => {
-      console.log('RESPONSE', res[0].data);
       this.setState({
         productFeatures: [ res[0].data ],
         // productPhotos: res[1].data.featuresUrls
@@ -81,7 +80,7 @@ class ProductFeatures extends Component {
   }
 
   componentDidMount() {
-    const productId = window.location.pathname.split('/')[1] || 1000;
+    const productId = window.location.pathname.split('/')[1] || 10000000;
     this.fetchData(productId);
   }
 

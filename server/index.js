@@ -1,3 +1,4 @@
+require('newrelic');
 const express = require('express');
 const app = express();
 const path = require('path');
@@ -33,10 +34,10 @@ app.post('/product-features', async (req, res) => {
 });
 
 app.get('/product-features/:id', async (req, res) => {
-  const { params: { id: productId } } = req;
+  const { params: { id } } = req;
 
   try {
-    const { rows } = await getFeatureRecord(productId);
+    const { rows } = await getFeatureRecord(id);
     const formattedData = formatData(rows);
     res.send(formattedData);
   } catch (err) {
@@ -45,11 +46,10 @@ app.get('/product-features/:id', async (req, res) => {
 });
 
 app.put('/product-features/:id', async (req, res) => {
-  const { params: { id: productId } } = req;
-  const { body: { table, updates } } = req;
+  const { params: { id }, body: { table, updates } } = req;
 
   try {
-    const response = await updateFeatureRecord(table, productId, updates);
+    const response = await updateFeatureRecord(table, id, updates);
     res.send(response);
   } catch (err) {
     res.status(500).send(err);
@@ -57,11 +57,10 @@ app.put('/product-features/:id', async (req, res) => {
 });
 
 app.delete('/product-features/:id', async (req, res) => {
-  const { params: { id: productId } } = req;
-  const { body: { table } } = req;
+  const { params: { id }, body: { table } } = req;
 
   try {
-    const response = await deleteFeatureRecord(table, productId);
+    const response = await deleteFeatureRecord(table, id);
     res.send(response);
   } catch (err) {
     res.status(500).send(err);

@@ -88,8 +88,6 @@ module.exports.generateUpdateFeatureQuery = (table, productId, dataObj) => {
 
   const query = `UPDATE ${table} SET ${updates} WHERE product_id = ${productId} RETURNING *;`;
 
-  console.log(query);
-
   return query;
 }
 
