@@ -115,36 +115,30 @@ module.exports.generateContentGridRow = (featureIdDecid) => {
   return `${title},${description},${featureIdDecid}\n`;
 }
 
-const generateSqlData = (batchSize, startingId, table) => {
-  const data = [];
-
-  if (table === 'features') {
-
-    while (batchSize > 0) {
-      const dataString = `'${fakeHeader()}', '${fakeDescription()}', '${fakeDescription()}', '${fakeHeader()}', '1. ${fakeSentence()}', '2. ${fakeSentence()}', '3. ${fakeSentence()}', '${fakeHeader()}', '${fakeDescription()}'`;
-      data.push(`(${dataString})`);
-      batchSize--;
-    }
-
-  } else if (table === 'featuresList') {
-    // code
-  } else if (table === 'contentGrid') {
-    // code
-  }
-
-  return data;
-}
-
 module.exports.generateData = (batchSize, startingId, dataType, table) => {
   if (batchSize === undefined || startingId === undefined || dataType === undefined) {
     throw new Error('Must pass in a batchSize, startingId and dataType in order to generate data');
   }
 
-  let data;
-
-  dataType === 'nosql' ? data = generateNoSqlData(batchSize, startingId) : data = generateSqlData(batchSize, startingId, table);
+  const data = generateNoSqlData(batchSize, startingId);
 
   return data;
+}
+
+module.exports.generatefFeaturesTableRecord = () => {
+  const record = {
+    bannerHeader: fakeHeader(),
+    bannerText1: fakeDescription(),
+    bannerText2: fakeDescription(),
+    setupHeader: fakeHeader(),
+    setupDescription1: fakeSentence(),
+    setupDescription2: fakeSentence(),
+    setupDescription3: fakeSentence(),
+    additionalFeaturesHeader: fakeHeader(),
+    additionalFeaturesDescription: fakeDescription(),
+  };
+
+  return record;
 }
 
 module.exports.formatData = (data) => {
