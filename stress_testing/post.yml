@@ -3,7 +3,7 @@ config:
   http:
     timeout: 10
   phases:
-    - duration: 10
+    - duration: 5
       arrivalRate: 1
       name: test
     - duration: 60

@@ -96,3 +96,13 @@ module.exports.generateDeleteFeatureQuery = (table, productId) => {
 
   return query;
 }
+
+//------------------------------------
+// Database Cleaning Query Generators
+//------------------------------------
+
+module.exports.generateCleanTableQuery = (table, ceilingProductId) => {
+  const query =  `DELETE FROM ${table} WHERE product_id > ${ceilingProductId}`;
+
+  return query;
+}

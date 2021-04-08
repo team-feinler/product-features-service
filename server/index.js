@@ -24,7 +24,7 @@ app.use('/:id', express.static(path.join(__dirname + '/../public')));
 
 app.post('/product-features', async (req, res) => {
   const { body: { table, record } } = req;
-
+  console.log(table);
   try {
     const response = await addFeatureRecord(table, record);
     res.send(response);
@@ -35,7 +35,7 @@ app.post('/product-features', async (req, res) => {
 
 app.get('/product-features/:id', async (req, res) => {
   const { params: { id } } = req;
-
+  console.log(id);
   try {
     const { rows } = await getFeatureRecord(id);
     const formattedData = formatData(rows);

@@ -18,7 +18,8 @@
     "build": "webpack --watch",
     "start": "nodemon server/start.js",
     "stress-test-get": "artillery run stress_testing/get.yml",
-    "stress-test-post": "artillery run stress_testing/post.yml"
+    "stress-test-post": "artillery run stress_testing/post.yml",
+    "clean-db": "node database/clean_db.js"
   },
   "dependencies": {
     "axios": "^0.21.1",

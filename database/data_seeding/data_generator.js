@@ -127,15 +127,15 @@ module.exports.generateData = (batchSize, startingId, dataType, table) => {
 
 module.exports.generatefFeaturesTableRecord = () => {
   const record = {
-    bannerHeader: fakeHeader(),
-    bannerText1: fakeDescription(),
-    bannerText2: fakeDescription(),
-    setupHeader: fakeHeader(),
-    setupDescription1: fakeSentence(),
-    setupDescription2: fakeSentence(),
-    setupDescription3: fakeSentence(),
-    additionalFeaturesHeader: fakeHeader(),
-    additionalFeaturesDescription: fakeDescription(),
+    feature_banner_header: `'${fakeHeader()}'`,
+    feature_banner_text_1: `'${fakeDescription()}'`,
+    feature_banner_text_2: `'${fakeDescription()}'`,
+    feature_setup_header: `'${fakeHeader()}'`,
+    feature_setup_description_1: `'${fakeSentence()}'`,
+    feature_setup_description_2: `'${fakeSentence()}'`,
+    feature_setup_description_3: `'${fakeSentence()}'`,
+    additional_features_header: `'${fakeHeader()}'`,
+    additional_features_description: `'${fakeDescription()}'`,
   };
 
   return record;
