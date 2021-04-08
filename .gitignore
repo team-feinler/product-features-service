@@ -3,15 +3,15 @@
 
 ## NPM ##
 node_modules/
+configs/
 
 # Compiled Dirs (http://nodejs.org/api/addons.html)
 public/*
 !public/index.html
 __snapshots__
-nosql_database.config.js
-sql_database.config.js
 api.tests.test.js
 seeding.csv
+newrelic.js
 
 #keyfile
 *.pem

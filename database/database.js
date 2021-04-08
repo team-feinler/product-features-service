@@ -1,5 +1,5 @@
 const { Client } = require('pg');
-const { userName, password } = require('../database_configs/sql_database.config.js');
+const { userName, password } = require('../configs/sql_database.config.js');
 const {
   generateInsertFeatureQuery,
   generateGetFeatureQuery,
