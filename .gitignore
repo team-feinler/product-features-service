@@ -12,6 +12,7 @@ __snapshots__
 api.tests.test.js
 seeding.csv
 newrelic.js
+newrelic_agent.log
 
 #keyfile
 *.pem
