@@ -1,0 +1,24 @@
+config:
+  target: 'http://localhost:4000'
+  http:
+    timeout: 10
+  phases:
+    - duration: 5
+      arrivalRate: 1
+      name: test
+    - duration: 60
+      arrivalRate: 10
+      name: low
+    - duration: 60
+      arrivalRate: 100
+      name: medium
+    - duration: 60
+      arrivalRate: 1000
+      name: high
+  processor: './functions.js'
+
+scenarios:
+  - flow:
+    - post:
+        url: '/product-features'
+        beforeRequest: 'setFakeDataRecord'

@@ -1,4 +1,4 @@
-const { featuresTableRecord } = require('../database/data_seeding/fake_data_records.js');
+const { generatefFeaturesTableRecord } = require('../database/data_seeding/data_generator.js');
 
 function setUrlWithProductId(requestParams, context, ee, next) {
   const bottomTenPercentId = 9000000 + Math.ceil(Math.random() * 1000000);
@@ -8,11 +8,18 @@ function setUrlWithProductId(requestParams, context, ee, next) {
   return next();
 }
 
-function generateFakeFeaturesRecord() {
-  // code
+function setFakeDataRecord(requestParams, context, ee, next) {
+  const json = {
+    table: 'features',
+    record: generatefFeaturesTableRecord(),
+  };
+
+  requestParams.json = json;
+  return next();
 }
+
 
 module.exports = {
   setUrlWithProductId,
-  generateFakeFeaturesRecord,
+  setFakeDataRecord,
 }

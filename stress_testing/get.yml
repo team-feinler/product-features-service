@@ -1,5 +1,7 @@
 config:
   target: 'http://localhost:4000'
+  http:
+    timeout: 10
   phases:
     - duration: 5
       arrivalRate: 1
@@ -11,7 +13,7 @@ config:
       arrivalRate: 100
       name: medium
     - duration: 60
-      arrivalRate: 1000
+      arrivalRate: 150
       name: high
   processor: './functions.js'
 

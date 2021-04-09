@@ -12,15 +12,14 @@
     "node": ">=6.13.0"
   },
   "scripts": {
-    "mocha-tests": "./node_modules/mocha/bin/mocha --timeout 5000 --no-deprecation",
     "test": "jest -u",
-    "seeder": "node database/seed-data/seeder.js",
     "seed-nosql": "node database/data_seeding/nosql_seeder.js",
     "seed-sql": "node database/data_seeding/sql_seeder.js",
-    "react-dev": "webpack --mode=development --watch",
-    "start-dev": "nodemon server/server.js",
     "build": "webpack --watch",
-    "start": "nodemon server/start.js"
+    "start": "nodemon server/start.js",
+    "stress-test-get": "artillery run stress_testing/get.yml",
+    "stress-test-post": "artillery run stress_testing/post.yml",
+    "clean-db": "node database/clean_db.js"
   },
   "dependencies": {
     "axios": "^0.21.1",

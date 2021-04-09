@@ -3,7 +3,7 @@ const fs = require('fs');
 const { Pool } = require('pg');
 const copyFrom  = require('pg-copy-streams').from;
 
-const { userName, password } = require('../../database_configs/sql_database.config.js');
+const { userName, password } = require('../../configs/sql_database.config.js');
 const { generateFeaturesTableRow, generateFeaturesListTableRow, generateContentGridRow } = require('./data_generator.js');
 const { generateCopyQuery, addPrimaryKey, addForeignKey, addUniqueConstraint, createIndex } = require('./query_generator.js');
 const outputFile = `${__dirname}/seeding.csv`;
