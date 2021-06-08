@@ -1,13 +1,10 @@
-# Amazon Product Page - Product Features
+# Amazon Product Page - Product Features Microservice
 
-> Front End Capstone (FEC) Project
+> An e-commerce application built on SOA principles allowing users to find and purchase products
 
 ## Related Projects
 
-  - https://github.com/teamName/repo
-  - https://github.com/teamName/repo
-  - https://github.com/teamName/repo
-  - https://github.com/teamName/repo
+  - https://github.com/team-feinler/
 
 ## Table of Contents
 
@@ -17,43 +14,37 @@
 
 ## Usage
 
-> Some usage instructions
+## Crud API
+
+- POST
+> Endpoint: "/product-features"
+> Required body: record to insert
+> Response: Will return 200 if successul, 500 unsuccessful
+
+- GET
+> Endpoint: "/product-features/:id"
+> Required body: NA
+> Response: Will return 200 and response data if successul, 500 if unsuccessful
+> Response data format: { productId: INTEGER, banner: OBJECT, features: ARRAY, featureSetup: OBJECT, additionalFeatures: OBJECT }
+
+- PUT
+> Endpoint: "/product-features/:id"
+> Required body: productId to update, JSON of updates to make in this format - { productId: product_id, updates: { updates_to_make }}
+> Response: Will return 200 if successul, 500 if unsuccessful
+
+- DELETE
+> Endpoint: "/product-features/:id"
+> Required body: productId to delete
+> Response: Will return 200 if successul, 500 if unsuccessful
 
 ## Requirements
 
 An `nvmrc` file is included if using [nvm](https://github.com/creationix/nvm).
 
 - Node 6.13.0
-- etc
+- Postgres 13.2
 
 ## Development
-
-## Crud API
-
-- POST
-> Method: POST
-> Endpoint: "/product-features"
-> Required body: record to insert
-> Response: Will return 200 if successul, 500 if not or if record already exists
-
-- GET
-> Method: GET
-> Endpoint: "/product-features:id"
-> Required body: NA
-> Response: Will return 200 and response data if successul, 500 if not
-> Response data format: { productId: INTEGER, banner: OBJECT, features: ARRAY, featureSetup: OBJECT, additionalFeatures: OBJECT }
-
-- PUT
-> Method: PUT
-> Endpoint: "/product-features"
-> Required body: productId to update, JSON of updates to make in this format - { productId: product_id, updates: { updates_to_make }}
-> Response: Will return 200 if successul, 500 if not or if record doesn't exist
-
-- DELETE
-> Method: DELETE
-> Endpoint: "/product-features"
-> Required body: productId to delete
-> Response: Will return 200 if successul, 500 if not or if record doesn't exists
 
 ### Installing Dependencies
 
@@ -61,6 +52,7 @@ From within the root directory:
 
 ```sh
 npm install -g webpack
+npm install -g nodemon
 npm install
 ```
 

@@ -1,12 +1,12 @@
 const { Client } = require('pg');
 
-const { userName, password } = require('./../configs/sql_database.config.js');
+const { userName, password, host } = require('./../configs/sql_database.config.js');
 const { generateCleanTableQuery } = require('./data_seeding/query_generator.js');
 
 const clientObj = {
   user: userName,
   password: password,
-  host: 'localhost',
+  host: host,
   database: 'product_features',
   port: 5432,
 };

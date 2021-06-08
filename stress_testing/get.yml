@@ -1,26 +1,11 @@
 config:
-  target: 'http://localhost:4000'
+  target: 'http://204.236.178.72:3000'
   http:
     timeout: 10
   phases:
-    - duration: 5
-      arrivalRate: 1
-      name: test
-    - duration: 60
-      arrivalRate: 10
-      name: low
-    - duration: 60
-      arrivalRate: 100
-      name: medium
-    - duration: 60
-      arrivalRate: 150
-      name: medium-high
-    - duration: 60
+    - duration: 600
       arrivalRate: 200
-      name: medium-high-2
-    - duration: 60
-      arrivalRate: 1000
-      name: high
+      name: 200 rps for 10 mins
   processor: './functions.js'
 
 scenarios:
